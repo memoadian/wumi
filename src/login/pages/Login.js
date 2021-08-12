@@ -59,7 +59,6 @@ const Login = () => {
                         <Input 
                             id="email"
                             type="email"
-                            value="enrique.romero@wumi.‌com"
                             placeholder="Correo Electrónico"
                             validators={[VALIDATOR_REQUIRED(), VALIDATOR_EMAIL()]}
                             errorText="El correo electrónico no es válido"
@@ -68,7 +67,6 @@ const Login = () => {
                         <Input
                             id="password"
                             type="password"
-                            value="nRa3hVPFdgR0m3R0"
                             placeholder="Contraseña (+8 caracteres)"
                             validators={[VALIDATOR_MINLENGTH(8)]}
                             errorText="Este campo es obligatorio y requiere al menos 8 caractéres"
