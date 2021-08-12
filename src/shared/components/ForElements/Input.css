@@ -1,0 +1,15 @@
+.form-control {
+  margin-bottom: 30px;
+}
+.form-control span {
+  display: none;
+  color: red;
+  font-size: 12px;
+  padding: 5px;
+}
+.form-control--invalid input {
+  border: 1px solid red;
+}
+.form-control--invalid span {
+  display: block;
+}

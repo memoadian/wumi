@@ -1,13 +1,342 @@
-body {
-  margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+@import "https://cdn.jsdelivr.net/npm/bulma@0.9.3/css/bulma.min.css";
+a {
+  color: #ff7d54;
 }
 
-code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
+.content-body {
+  min-height: 100vh;
+  width: 100%;
+  padding: 20px 20px 20px 233px;
+  background-color: #f8f8f8;
+}
+.content-body .page-login {
+  padding-top: 70px;
+  margin-left: -213px;
+  text-align: center;
+}
+.slogan {
+  font-size: 42px;
+  color: #003249;
+  width: 320px;
+  padding: 0 35px;
+  margin-bottom: 30px;
+}
+.sesion {
+  width: 320px;
+  margin-bottom: 30px;
+  padding: 0 35px;
+}
+.form-login input {
+  display: block;
+  width: 100%;
+  border: none;
+  background-color: white;
+  padding: 13px 20px 13px 52px;
+  border-radius: 5px;
+}
+.form-login input::placeholder {
+  color: #003249;
+}
+.form-login button {
+  display: block;
+  width: 70%;
+  margin: 0 auto;
+  margin-top: 20px;
+  padding: 10px 50px 10px 50px;
+  border-radius: 30px;
+  background-color: #00cbc2;
+  border: none;
+  color: #fff;
+  font-size: 20px;
+  cursor: pointer;
+}
+
+h1 {
+  color: #003249;
+  font-size: 30px;
+  font-weight: 900;
+  margin-top: 40px;
+  margin-bottom: 40px;
+}
+h1 span {
+  font-weight: 400;
+}
+
+.sidebar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 200px;
+  background-color: #e5fffe;
+  min-height: 100vh;
+}
+.sidebar .logo {
+  background-color: #fff;
+  padding: 40px;
+  margin-bottom: 50px;
+}
+.sidebar .logo img {
+  margin: 0 auto;
+  display: block;
+  width: 40px;
+}
+.sidebar .logo span {
+  text-align: center;
+  display: block;
+  margin-top: 10px;
+}
+.sidebar li {
+}
+.sidebar li a {
+  display: block;
+  width: 180px;
+  border-radius: 0 30px 30px 0;
+  font-weight: bold;
+  color: #003249;
+  padding: 15px 20px;
+}
+.sidebar li a.active {
+  background-color: #003249;
+  color: #fff;
+}
+
+.card {
+  background-color: #fff;
+  box-shadow: 0px 0px 20px 10px #eee;
+  display: inline-block;
+  padding: 36px;
+  border-radius: 16px;
+  margin-left: 0px;
+  width: 100%;
+}
+.card.no-padding {
+  padding: 0;
+}
+.card.no-margin {
+  margin: 0;
+}
+.card span {
+  display: block;
+}
+.card .title {
+  font-size: 35px;
+  font-weight: 900;
+  color: #000;
+}
+.card .subtitle {
+  font-size: 12px;
+  color: #000;
+}
+
+.table-body {
+  width: 100%;
+}
+
+.card-with-header {
+  background-color: #fff;
+  box-shadow: 0px 0px 20px 10px #eee;
+  width: 100%;
+  display: inline-block;
+  border-radius: 16px;
+}
+.card-with-header .header {
+  background-color: #e5fffe;
+  padding: 36px;
+  border-radius: 16px 16px 0 0;
+}
+.card-with-header .title {
+  font-size: 20px;
+  font-weight: 900;
+  color: #000;
+}
+.card-with-header .body {
+  display: block;
+  padding: 36px;
+}
+
+.card-multi {
+  text-align: center;
+}
+
+.labels {
+  font-weight: 900;
+}
+.labels li {
+  padding: 10px;
+  width: 100%;
+  position: relative;
+}
+.circle {
+  display: inline-block;
+  vertical-align: bottom;
+  width: 20px;
+  height: 20px;
+  margin-right: 10px;
+  border-radius: 100%;
+}
+.labels .num {
+  font-weight: 500;
+  position: absolute;
+  right: 0;
+}
+
+.rdt_TableHeadRow {
+  background-color: #ffeced !important;
+  border-bottom: 1px solid transparent !important;
+}
+
+.title-h1 {
+  position: relative;
+}
+.button {
+  background-color: #003249;
+  color: #fff;
+  border-radius: 100px;
+  padding: 0 30px;
+  font-weight: bold;
+}
+.button:active,
+.button:hover,
+.button:visited,
+.button:focus {
+  color: #fff;
+}
+.right-h1 {
+  position: absolute;
+  right: 0;
+  top: 0;
+}
+.full {
+  width: 100%;
+}
+
+.Overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.9);
+}
+.form-modal input,
+.form-modal textarea,
+.form-modal select {
+  background-color: #f6f6f6;
+  width: 100%;
+  border: none;
+  padding: 15px 10px;
+  margin-bottom: 10px;
+  border-radius: 10px;
+}
+.form-modal label {
+  color: #003249;
+  display: block;
+  margin-bottom: 10px;
+}
+.form-modal .submit {
+  display: inline-block;
+}
+.form-modal .cancel {
+  background: transparent;
+  border: none;
+  display: inline-block;
+  padding: 0 30px;
+  color: #003249;
+}
+.form-modal .buttons {
+  margin-top: 20px;
+  text-align: right;
+}
+
+.card-category {
+  background-color: #fff;
+  display: block;
+  border-radius: 16px;
+  width: 70%;
+  margin: 0 auto 20px;
+}
+.card-category-header {
+  padding: 30px;
+  font-weight: bold;
+  font-size: 20px;
+  border-radius: 16px 16px 0 0;
+}
+.card-category-body {
+  padding: 30px;
+  background: #f8f8f8;
+}
+.card-category p {
+  font-weight: bold;
+}
+.card-category-footer {
+  background: #f8f8f8;
+  border-top: 1px solid #e8e8e8;
+  border-radius: 0 0 16px 16px;
+}
+.card-category-footer .left {
+  display: inline-block;
+  width: 50%;
+  padding: 15px 0;
+  text-align: center;
+  border-right: 1px solid #e8e8e8;
+}
+.card-category-footer .right {
+  display: inline-block;
+  width: 50%;
+  padding: 15px 0;
+  text-align: center;
+}
+
+.back-blue {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  right: 0;
+  bottom: 0;
+  background: #003249;
+  border-radius: 16px;
+}
+.gray {
+  border-radius: 5px;
+  background: #ddd;
+}
+
+.jMeWFj {
+  border-radius: 0 0 16px 16px !important;
+}
+
+/*FILTER*/
+input.filter-text {
+  margin: 20px 0px;
+  height: 32px;
+  border-radius: 100px;
+  padding: 5px 20px;
+  border: 1px solid #e8e8e8;
+}
+input.filter-text::placeholder {
+  color: #a1a1a1;
+}
+button.download,
+button.print {
+  display: none;
+}
+.data-table-extensions {
+  text-align: right;
+}
+.data-table-extensions-filter {
+  display: inline-block;
+}
+.data-table-extensions-action {
+  display: inline-block;
+  vertical-align: top;
+  padding: 0 20px;
+}
+.data-table-extensions-action button {
+  background: #003249;
+  color: #fff;
+  border-radius: 100px;
+  padding: 5px 20px;
+  border: 0;
+  margin: 20px 5px;
+  height: 32px;
 }

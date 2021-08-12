@@ -1,12 +1,12 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
-import App from './App';
 import reportWebVitals from './reportWebVitals';
+import WumiApp from './WumiApp';
 
 ReactDOM.render(
   <React.StrictMode>
-    <App />
+    <WumiApp />
   </React.StrictMode>,
   document.getElementById('root')
 );
