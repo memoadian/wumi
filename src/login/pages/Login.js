@@ -5,11 +5,10 @@ import { useHistory } from 'react-router-dom'
 import { AuthContext } from 'shared/context/auth-context'
 import { VALIDATOR_EMAIL, VALIDATOR_MINLENGTH, VALIDATOR_REQUIRED } from 'shared/utils/validator'
 import Input from 'shared/components/ForElements/Input'
-import { useForm, setFormData } from 'shared/hooks/form-hook'
+import { useForm } from 'shared/hooks/form-hook'
 
 const Login = () => {
     const history = useHistory()
-    //const handleClick = () => history.replace('/panel')
 
     const auth = useContext(AuthContext)
 

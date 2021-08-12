@@ -1,30 +1,41 @@
-import React from 'react'
+import React, {useEffect, useContext, useState } from 'react'
+import axios from 'axios'
+import { AuthContext } from 'shared/context/auth-context'
 import DataTable from 'react-data-table-component';
 
 const Users = () => {
-    const data = [
-        { name: 'Belén', surname: 'Sosa', email: 'belen@mail.com', genre: 'Mujer', range: '20-25', moment: 'Mientras..', area: 'Relaciones interpersonales', level: 'algunas veces' },
-        { name: 'Belén', surname: 'Sosa', email: 'belen@mail.com', genre: 'Mujer', range: '20-25', moment: 'Mientras..', area: 'Relaciones interpersonales', level: 'algunas veces' },
-        { name: 'Belén', surname: 'Sosa', email: 'belen@mail.com', genre: 'Mujer', range: '20-25', moment: 'Mientras..', area: 'Relaciones interpersonales', level: 'algunas veces' },
-        { name: 'Belén', surname: 'Sosa', email: 'belen@mail.com', genre: 'Mujer', range: '20-25', moment: 'Mientras..', area: 'Relaciones interpersonales', level: 'algunas veces' },
-        { name: 'Belén', surname: 'Sosa', email: 'belen@mail.com', genre: 'Mujer', range: '20-25', moment: 'Mientras..', area: 'Relaciones interpersonales', level: 'algunas veces' },
-        { name: 'Belén', surname: 'Sosa', email: 'belen@mail.com', genre: 'Mujer', range: '20-25', moment: 'Mientras..', area: 'Relaciones interpersonales', level: 'algunas veces' },
-        { name: 'Belén', surname: 'Sosa', email: 'belen@mail.com', genre: 'Mujer', range: '20-25', moment: 'Mientras..', area: 'Relaciones interpersonales', level: 'algunas veces' },
-        { name: 'Belén', surname: 'Sosa', email: 'belen@mail.com', genre: 'Mujer', range: '20-25', moment: 'Mientras..', area: 'Relaciones interpersonales', level: 'algunas veces' },
-        { name: 'Belén', surname: 'Sosa', email: 'belen@mail.com', genre: 'Mujer', range: '20-25', moment: 'Mientras..', area: 'Relaciones interpersonales', level: 'algunas veces' },
-        { name: 'Belén', surname: 'Sosa', email: 'belen@mail.com', genre: 'Mujer', range: '20-25', moment: 'Mientras..', area: 'Relaciones interpersonales', level: 'algunas veces' },
-        { name: 'Belén', surname: 'Sosa', email: 'belen@mail.com', genre: 'Mujer', range: '20-25', moment: 'Mientras..', area: 'Relaciones interpersonales', level: 'algunas veces' },
-    ];
+
+    const auth = useContext(AuthContext)
+    const [data, setData] = useState([])
+    const [users, setUsers] = useState(0)
+
+    useEffect(() => {
+        if (!auth.token) {return}
+        const fetchUsers = async () => {
+            const response = await axios({
+                headers: {
+                    Authorization: `Bearer ${auth.token}`
+                },
+                baseURL: 'https://api.wumi.app/api/v1/users/',
+                method: 'GET',
+            })
+
+            console.log(response.data.results)
+            setData(response.data.results)
+            setUsers(response.data.count)
+        }
+        fetchUsers()
+    }, [auth])
 
     const columns = [
     {
         name: 'Nombre(s)',
-        selector: 'name',
+        selector: 'first_name',
         sortable: true,
     },
     {
         name: 'Apellidos',
-        selector: 'surname',
+        selector: 'last_name',
         sortable: true,
     },
     {
@@ -35,13 +46,13 @@ const Users = () => {
     },
     {
         name: 'Género',
-        selector: 'genre',
+        selector: 'gender.title',
         sortable: true,
         right: true,
     },
     {
         name: 'Rango de Edad',
-        selector: 'range',
+        selector: 'age.title',
         sortable: true,
         right: true,
     },
@@ -53,7 +64,7 @@ const Users = () => {
     },
     {
         name: 'Área de oportunidad',
-        selector: 'area',
+        selector: 'opportunity.title',
         sortable: true,
         right: true,
     },
@@ -67,7 +78,7 @@ const Users = () => {
 
     return (
         <div>
-            <h1>Usuarios <span>1,369</span></h1>
+            <h1>Usuarios <span> {users} </span></h1>
             <div className="columns">
                 <div className="column">
                     <div className="card no-margin">
