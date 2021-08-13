@@ -9,6 +9,7 @@ import Sidebar from 'shared/components/Sidebar'
 import ContentBody from './ContentBody'
 
 import Categories from '../categories/pages/Categories'
+import Category from '../categories/pages/Category'
 import Home from '../home/pages/Home'
 import Login from '../login/pages/Login'
 import Notifications from '../notifications/pages/Notifications'
@@ -66,6 +67,7 @@ const Main = () => {
                         <Route exact path="/categories" component={Categories} />
                         <Route exact path="/notifications" component={Notifications} />
                         <Route exact path="/profile" component={Profile} />
+                        <Route exact path="/category/:id" component={Category} />
                     </Switch>
                 </ContentBody>
             </Router>

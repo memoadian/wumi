@@ -3,7 +3,7 @@ import Card from 'shared/components/Card'
 import { PieChart } from 'react-minimal-pie-chart'
 import CardWithHeader from 'shared/components/CardWithHeader'
 import CardMulti from 'shared/components/CardMulti'
-import DataTable, { createTheme } from 'react-data-table-component';
+import DataTable from 'react-data-table-component';
 
 const Dashboard = () => {
 

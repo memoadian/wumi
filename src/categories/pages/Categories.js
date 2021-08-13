@@ -1,10 +1,30 @@
-import {useState} from 'react'
+import {useState, useContext, useEffect} from 'react'
+import axios from 'axios'
 import Scrollbars from 'react-custom-scrollbars-2'
 import Modal from 'react-modal'
-import CardCategory from 'shared/components/CardCategory'
+import CardCategory from 'categories/components/CardCategory'
+import { AuthContext } from 'shared/context/auth-context'
 
 const Categories = () => {
+    const auth = useContext(AuthContext)
     const [openModal, setOpenModal] = useState(false)
+    const [data, setData] = useState([])
+
+    useEffect(() => {
+        if (!auth.token) {return}
+        const fetchCategories = async () => {
+            const response = await axios({
+                headers: {
+                    Authorization: `Bearer ${auth.token}`
+                },
+                baseURL: 'https://api.wumi.app/api/v1/catalog/categories',
+                method: 'GET',
+            })
+
+            setData(response.data.results)
+        }
+        fetchCategories()
+    }, [auth])
 
     const handleOpenModal = () => {
         setOpenModal(true)
@@ -28,7 +48,13 @@ const Categories = () => {
             border: 'none',
             borderRadius: '30px'
         },
-    };
+    }
+
+    const listItems = data.map(({id, title, color}) => 
+        <div className="column is-one-quarter-desktop is-half-tablet">
+            <CardCategory key={id} id={id} title={title} background={color} ></CardCategory>
+        </div>
+    )
 
     return (
         <div>
@@ -43,33 +69,7 @@ const Categories = () => {
                     >
                     <div className="padding-container" style={{padding: '20px'}}>
                         <div className="columns is-multiline">
-                            <div className="column is-one-quarter-desktop is-half-tablet">
-                                <CardCategory title="Cuerpo" background="#fcece5"></CardCategory>
-                            </div>
-                            <div className="column is-one-quarter-desktop is-half-tablet">
-                                <CardCategory title="Mente"  background="#dbf2d9" ></CardCategory>
-                            </div>
-                            <div className="column is-one-quarter-desktop is-half-tablet">
-                                <CardCategory title="Respiración"  background="#dddee8" ></CardCategory>
-                            </div>
-                            <div className="column is-one-quarter-desktop is-half-tablet">
-                                <CardCategory title="Sanación"  background="#fdf8dd" ></CardCategory>
-                            </div>
-                            <div className="column is-one-quarter-desktop is-half-tablet">
-                                <CardCategory title="Descanso" background="#d8eaf9"></CardCategory>
-                            </div>
-                            <div className="column is-one-quarter-desktop is-half-tablet">
-                                <CardCategory title="Cuerpo" background="#fcece5"></CardCategory>
-                            </div>
-                            <div className="column is-one-quarter-desktop is-half-tablet">
-                                <CardCategory title="Mente"  background="#dbf2d9" ></CardCategory>
-                            </div>
-                            <div className="column is-one-quarter-desktop is-half-tablet">
-                                <CardCategory title="Respiración"  background="#dddee8" ></CardCategory>
-                            </div>
-                            <div className="column is-one-quarter-desktop is-half-tablet">
-                                <CardCategory title="Sanación"  background="#fdf8dd" ></CardCategory>
-                            </div>
+                            {listItems}
                         </div>
                     </div>
                 </Scrollbars>
@@ -87,7 +87,7 @@ const Categories = () => {
                         <label>Color</label>
                         <div className="columns">
                             <div className="column buttons">
-                                <button className="button cancel">Cancelar</button>
+                                <button onClick={handleCloseModal} type="button" className="button cancel">Cancelar</button>
                                 <button className="button submit">Guardar</button>
                             </div>
                         </div>

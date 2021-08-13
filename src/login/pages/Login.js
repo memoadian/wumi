@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react'
+import React, { useContext } from 'react'
 import axios from 'axios'
 import logo from 'logo.png'
 import { useHistory } from 'react-router-dom'
@@ -12,7 +12,7 @@ const Login = () => {
 
     const auth = useContext(AuthContext)
 
-    const [formState, inputHandler, setFormData] = useForm({
+    const [formState, inputHandler] = useForm({
         email: {
             value: '',
             isValid: false,
@@ -71,7 +71,7 @@ const Login = () => {
                             errorText="Este campo es obligatorio y requiere al menos 8 caractéres"
                             onInput={inputHandler}
                         />
-                        <a href="">¿Olvidé mi contraseña?</a>
+                        <span>¿Olvidé mi contraseña?</span>
                         <button disabled={!formState.isValid}  >Comenzar</button>
                     </form>
                 </div>

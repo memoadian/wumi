@@ -20,15 +20,13 @@ const Users = () => {
                 method: 'GET',
             })
 
-            console.log(response.data.results)
             setData(response.data.results)
             setUsers(response.data.count)
         }
         fetchUsers()
     }, [auth])
 
-    const columns = [
-    {
+    const columns = [{
         name: 'Nombre(s)',
         selector: 'first_name',
         sortable: true,
@@ -42,39 +40,27 @@ const Users = () => {
         name: 'Correo',
         selector: 'email',
         sortable: true,
-        right: true,
     },
     {
         name: 'Género',
         selector: 'gender.title',
         sortable: true,
-        right: true,
     },
     {
         name: 'Rango de Edad',
         selector: 'age.title',
         sortable: true,
-        right: true,
     },
     {
         name: 'Momento',
-        selector: 'moment',
+        selector: 'my_time.title',
         sortable: true,
-        right: true,
     },
     {
         name: 'Área de oportunidad',
         selector: 'opportunity.title',
         sortable: true,
-        right: true,
-    },
-    {
-        name: 'Nivel',
-        selector: 'level',
-        sortable: true,
-        right: true,
-    },
-    ];
+    }]
 
     return (
         <div>
