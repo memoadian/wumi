@@ -1,4 +1,4 @@
-import React, { useContext } from 'react'
+import React, { useContext, useState } from 'react'
 import axios from 'axios'
 import logo from 'logo.png'
 import { useHistory } from 'react-router-dom'
@@ -6,12 +6,15 @@ import { AuthContext } from 'shared/context/auth-context'
 import { VALIDATOR_EMAIL, VALIDATOR_MINLENGTH, VALIDATOR_REQUIRED } from 'shared/utils/validator'
 import Input from 'shared/components/ForElements/Input'
 import { useForm } from 'shared/hooks/form-hook'
+import LoadingSpinner from 'shared/UIElements/Loader'
+import './Login.css'
 
 const Login = () => {
     const history = useHistory()
 
     const auth = useContext(AuthContext)
-
+    const [isLoading, setIsLoading] = useState(false)
+    const [error, setError] = useState();
     const [formState, inputHandler] = useForm({
         email: {
             value: '',
@@ -26,19 +29,31 @@ const Login = () => {
     const authSubmitHandler = async event => {
         event.preventDefault()
 
-        const response = await axios({
-            baseURL: 'https://api.wumi.app/api/v1/oauth/login/',
-            method: 'POST',
-            data: {
-                email: formState.inputs.email.value,
-                password: formState.inputs.password.value,
-                device_id: "IrCUWvrPEqYZr7fT-mrFRi0U4cfGhCPAtHL7VmQQ"
+        setIsLoading(true)
+
+        try {
+            const response = await axios({
+                baseURL: 'https://api.wumi.app/api/v1/oauth/login/',
+                method: 'POST',
+                data: {
+                    email: formState.inputs.email.value,
+                    password: formState.inputs.password.value,
+                    device_id: "IrCUWvrPEqYZr7fT-mrFRi0U4cfGhCPAtHL7VmQQ"
+                }
+            })
+            
+            setIsLoading(false)
+
+            if (response.status === 200) {
+                history.replace('/panel')
+                auth.login(response.data.user, response.data.token)
+            } else {
+                console.log(response)
             }
-        })
-        
-        if (response.status === 200) {
-            history.replace('/panel')
-            auth.login(response.data.user, response.data.token)
+        } catch (err) {
+            console.log(err.response.data)
+            setIsLoading(false)
+            setError(err.response.data.detail || 'Something went wrong, please try again.')
         }
     }
 
@@ -54,6 +69,8 @@ const Login = () => {
                     Inicia sesión para configurar, editar y crear nuevo contenido
                 </div>
                 <div className="form-login">
+                    {isLoading && <LoadingSpinner asOverlay />}
+                    <p className="error">{error}</p>
                     <form onSubmit={authSubmitHandler}>
                         <Input 
                             id="email"
