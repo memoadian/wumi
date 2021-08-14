@@ -17,17 +17,15 @@ const Dashboard = () => {
     const columns = [
     {
         name: 'ID',
-        selector: 'id',
-        sortable: true,
+        selector: row => row.id,
     },
     {
         name: 'Tipo',
-        selector: 'tipo',
-        sortable: true,
+        selector: row => row.tipo,
     },
     {
         name: 'Vistas',
-        selector: 'vistas',
+        selector: row => row.vistas,
         sortable: true,
         right: true,
     },

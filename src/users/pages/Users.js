@@ -28,38 +28,31 @@ const Users = () => {
 
     const columns = [{
         name: 'Nombre(s)',
-        selector: 'first_name',
-        sortable: true,
+        selector: row => row.first_name,
     },
     {
         name: 'Apellidos',
-        selector: 'last_name',
-        sortable: true,
+        selector: row => row.last_name,
     },
     {
         name: 'Correo',
-        selector: 'email',
-        sortable: true,
+        selector: row => row.email,
     },
     {
         name: 'Género',
-        selector: 'gender.title',
-        sortable: true,
+        selector: row => row.gender.title,
     },
     {
         name: 'Rango de Edad',
-        selector: 'age.title',
-        sortable: true,
+        selector: row => row.age.title,
     },
     {
         name: 'Momento',
-        selector: 'my_time.title',
-        sortable: true,
+        selector: row => row.my_time.title,
     },
     {
         name: 'Área de oportunidad',
-        selector: 'opportunity.title',
-        sortable: true,
+        selector: row => row.opportunity.title,
     }]
 
     return (

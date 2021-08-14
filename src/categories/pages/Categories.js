@@ -51,8 +51,8 @@ const Categories = () => {
     }
 
     const listItems = data.map(({id, title, color}) => 
-        <div className="column is-one-quarter-desktop is-half-tablet">
-            <CardCategory key={id} id={id} title={title} background={color} ></CardCategory>
+        <div key={id} className="column is-one-quarter-desktop is-half-tablet">
+            <CardCategory id={id} title={title} background={color} />
         </div>
     )
 
