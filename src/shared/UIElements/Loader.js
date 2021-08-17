@@ -2,7 +2,7 @@ import React from 'react';
 
 import './Loader.css';
 
-const LoadingSpinner = props => {
+const Loader = props => {
     return (
         <div className={`${props.asOverlay && 'loading-spinner__overlay'}`}>
             <div className="lds-dual-ring"></div>
@@ -10,4 +10,4 @@ const LoadingSpinner = props => {
     );
 };
 
-export default LoadingSpinner;
+export default Loader;

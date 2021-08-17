@@ -53,26 +53,38 @@ const Input = props => {
         })
     }
 
-    const element = props.element === 'textarea' ? 
-    <textarea
-        id={props.id}
-        onChange={changeHandler}
-        onBlur={touchHandler}
-        value={inputState.value}
-    />:
-    <input 
-        id={props.id}
-        type={props.type}
-        placeholder={props.placeholder}
-        onChange={changeHandler}
-        onBlur={touchHandler}
-        value={inputState.value}
-    />
+    const element = () => {
+        switch (props.element) {
+            case 'textarea':
+                return <textarea
+                    id={props.id}
+                    onChange={changeHandler}
+                    onBlur={touchHandler}
+                    value={inputState.value}
+                />
+            case 'select':
+                return <select
+                    id={props.id}
+                    onChange={changeHandler}
+                    onBlur={touchHandler}
+                    value={inputState.value}
+                />
+            default:
+                return <input 
+                    id={props.id}
+                    type={props.type}
+                    placeholder={props.placeholder}
+                    onChange={changeHandler}
+                    onBlur={touchHandler}
+                    value={inputState.value}
+                />
+        }
+    }
 
     return (
         <div className={`form-control ${!inputState.isValid && inputState.isTouched && 'form-control--invalid'}`} >
             <label htmlFor={props.id}>{props.label}</label>
-            {element}
+            {element()}
             {!inputState.isValid && inputState.isTouched && <span>{props.errorText}</span>}
         </div>
     )

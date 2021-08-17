@@ -4,9 +4,10 @@ import logo from 'logo.png'
 import { useHistory } from 'react-router-dom'
 import { AuthContext } from 'shared/context/auth-context'
 import { VALIDATOR_EMAIL, VALIDATOR_MINLENGTH, VALIDATOR_REQUIRED } from 'shared/utils/validator'
-import Input from 'shared/components/ForElements/Input'
+import Input from 'shared/components/FormElements/Input'
 import { useForm } from 'shared/hooks/form-hook'
-import LoadingSpinner from 'shared/UIElements/Loader'
+import Loader from 'shared/UIElements/Loader'
+
 import './Login.css'
 
 const Login = () => {
@@ -14,7 +15,7 @@ const Login = () => {
 
     const auth = useContext(AuthContext)
     const [isLoading, setIsLoading] = useState(false)
-    const [error, setError] = useState();
+    const [error, setError] = useState()
     const [formState, inputHandler] = useForm({
         email: {
             value: '',
@@ -69,7 +70,7 @@ const Login = () => {
                     Inicia sesión para configurar, editar y crear nuevo contenido
                 </div>
                 <div className="form-login">
-                    {isLoading && <LoadingSpinner asOverlay />}
+                    {isLoading && <Loader asOverlay />}
                     <p className="error">{error}</p>
                     <form onSubmit={authSubmitHandler}>
                         <Input 

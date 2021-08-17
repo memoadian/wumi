@@ -1,0 +1,20 @@
+input,
+select {
+  background: #f6f6f6;
+  border: 0px solid transparent;
+  height: 40px;
+  border-radius: 5px;
+  width: 100%;
+}
+textarea {
+  background: #f6f6f6;
+  border: 0px solid transparent;
+  border-radius: 5px;
+  width: 100%;
+}
+label {
+  color: #003249;
+  font-size: 13px;
+  margin-bottom: 10px;
+  display: block;
+}

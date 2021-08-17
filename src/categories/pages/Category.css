@@ -1,0 +1,21 @@
+.form-modal img {
+  width: 30%;
+}
+h1 {
+  margin: 25px;
+}
+h1.desc {
+  font-size: 24px;
+  background: none;
+}
+.single {
+  width: 80%;
+  margin: 0 auto;
+  background: #f0f0f0;
+  text-align: center;
+  padding: 30px;
+  border-radius: 10px;
+}
+.single.active {
+  border: 5px solid #00cbc2;
+}

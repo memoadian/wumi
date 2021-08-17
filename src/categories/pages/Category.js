@@ -1,4 +1,5 @@
-import {useState, useContext, useEffect} from 'react'
+import { useState, useContext, useEffect } from 'react'
+import { useHistory } from 'react-router'
 import axios from 'axios'
 import cat1 from 'assets/cat1.png'
 import cat2 from 'assets/cat2.png'
@@ -10,7 +11,9 @@ import './Category.css'
 
 const Category = props => {
     const auth = useContext(AuthContext)
+    const history = useHistory()
     const [openModal, setOpenModal] = useState(false)
+    const [type, setType] = useState('')
     const [data, setData] = useState([])
 
     useEffect(() => {
@@ -36,6 +39,18 @@ const Category = props => {
 
     const handleCloseModal = () => {
         setOpenModal(false)
+    }
+
+    const handleContent = type => {
+        setType(type)
+    }
+
+    const handleGoContent = () => {
+        if (type === 'single') {
+            history.push('/content-single')
+        } else if (type === 'chapter') {
+            history.push('/content-chapter')
+        }
     }
 
     const customStyles = {
@@ -68,7 +83,7 @@ const Category = props => {
     },
     {
         name: 'Duración',
-        selector: row => row.content_asset.duration,
+        selector: row => (row.content_asset != null) ? row.content_asset.duration : '',
         sortable: true,
     },
     {
@@ -102,6 +117,7 @@ const Category = props => {
                 </div>
             </div>
             <Modal
+                ariaHideApp={false}
                 isOpen={openModal}
                 style={customStyles}
                 onRequestClose={handleCloseModal}
@@ -110,16 +126,22 @@ const Category = props => {
                 <form className="form-modal">
                     <div className="columns">
                         <div className="column">
-                            <img src={cat1} alt="" />
+                            <div className={`single ${type === "single" ? "active" : ""}`} onClick={() => handleContent('single')}>
+                                <img src={cat1} alt="" />
+                                <h1 className="desc">Contenido Individual</h1>
+                            </div>
                         </div>
                         <div className="column">
-                            <img src={cat2} alt="" />
+                            <div className={`single ${type === "chapter" ? "active" : ""}`} onClick={() => handleContent('chapter')}>
+                                <img src={cat2} alt="" />
+                                <h1 className="desc">Contenido Por Capítulo</h1>
+                            </div>
                         </div>
                     </div>
                     <div className="columns">
                         <div className="column buttons">
                             <button onClick={handleCloseModal} type="button" className="button cancel">Cancelar</button>
-                            <button className="button submit">Continuar</button>
+                            <button onClick={handleGoContent} type="button" className="button submit">Continuar</button>
                         </div>
                     </div>
                 </form>
