@@ -4,8 +4,10 @@ import logo from 'logo.png'
 import { useHistory } from 'react-router-dom'
 import { AuthContext } from 'shared/context/auth-context'
 import { VALIDATOR_EMAIL, VALIDATOR_MINLENGTH, VALIDATOR_REQUIRED } from 'shared/utils/validator'
-import Input from 'shared/components/FormElements/Input'
 import { useForm } from 'shared/hooks/form-hook'
+import { mdiLockOutline, mdiEmailOutline } from '@mdi/js'
+import Icon from '@mdi/react'
+import Input from 'shared/components/FormElements/Input'
 import Loader from 'shared/UIElements/Loader'
 
 import './Login.css'
@@ -73,23 +75,37 @@ const Login = () => {
                     {isLoading && <Loader asOverlay />}
                     <p className="error">{error}</p>
                     <form onSubmit={authSubmitHandler}>
-                        <Input 
-                            id="email"
-                            type="email"
-                            placeholder="Correo Electrónico"
-                            validators={[VALIDATOR_REQUIRED(), VALIDATOR_EMAIL()]}
-                            errorText="El correo electrónico no es válido"
-                            onInput={inputHandler}
-                        />
-                        <Input
-                            id="password"
-                            type="password"
-                            placeholder="Contraseña (+8 caracteres)"
-                            validators={[VALIDATOR_MINLENGTH(8)]}
-                            errorText="Este campo es obligatorio y requiere al menos 8 caractéres"
-                            onInput={inputHandler}
-                        />
-                        <span>¿Olvidé mi contraseña?</span>
+                        <div className="icon-wrapper">
+                            <Icon 
+                                className="icon"
+                                path={mdiEmailOutline}
+                                size={0.8}
+                                vertical
+                                rotate={180}/>
+                            <Input 
+                                id="email"
+                                type="email"
+                                placeholder="Correo Electrónico"
+                                validators={[VALIDATOR_REQUIRED(), VALIDATOR_EMAIL()]}
+                                errorText="El correo electrónico no es válido"
+                                onInput={inputHandler}/>
+                        </div>
+                        <div className="icon-wrapper">
+                            <Icon 
+                                className="icon"
+                                path={mdiLockOutline}
+                                size={0.8}
+                                vertical
+                                rotate={180}/>
+                            <Input
+                                id="password"
+                                type="password"
+                                placeholder="Contraseña (+8 caracteres)"
+                                validators={[VALIDATOR_MINLENGTH(8)]}
+                                errorText="Este campo es obligatorio y requiere al menos 8 caractéres"
+                                onInput={inputHandler}/>
+                        </div>
+                        <span class="forget">¿Olvidé mi contraseña?</span>
                         <button disabled={!formState.isValid}  >Comenzar</button>
                     </form>
                 </div>

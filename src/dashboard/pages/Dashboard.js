@@ -1,11 +1,32 @@
-import React from 'react'
+import React, {useContext, useEffect, useState} from 'react'
 import Card from 'shared/components/Card'
 import { PieChart } from 'react-minimal-pie-chart'
+import { AuthContext } from 'shared/context/auth-context'
 import CardWithHeader from 'shared/components/CardWithHeader'
 import CardMulti from 'shared/components/CardMulti'
 import DataTable from 'react-data-table-component';
+import getStatsCategories from 'shared/helpers/getStatsCategories'
+import getUsers from 'shared/helpers/getUsers'
 
 const Dashboard = () => {
+
+    const auth = useContext(AuthContext)
+    const [isLoading, setIsLoading] = useState(false)
+    const [mostCategories, setMostCategories] = useState([])
+    const [countUsers, setCountUsers] = useState([])
+
+    useEffect(() => {
+        if (!auth) { return }
+        getStatsCategories(auth.token)
+            .then(cats => {
+                setMostCategories(cats)
+            })
+
+        getUsers(auth.token)
+            .then(data => {
+                setCountUsers(data.results.length)
+            })
+    }, [auth])
 
     const data = [
         { id: 1, tipo: 'Escaneo Coporal', vistas: '342' },
@@ -36,7 +57,7 @@ const Dashboard = () => {
             <h1>Dashboard</h1>
             <div className="columns">
                 <div className="column">
-                    <Card title="1,369" subtitle="Usuarios" indicator=""/>
+                    <Card title={countUsers} subtitle="Usuarios" indicator=""/>
                 </div>
                 <div className="column is-three-fifths">
                     <CardMulti/>
@@ -52,13 +73,7 @@ const Dashboard = () => {
                             <div className="column">
                                 <PieChart
                                     lineWidth="20"
-                                    data={[
-                                    { title: 'Cuerpo', value: 10, color: '#fcece5' },
-                                    { title: 'Sanación', value: 15, color: '#fdf8dd' },
-                                    { title: 'Descanso', value: 20, color: '#d8eaf9' },
-                                    { title: 'Mente', value: 20, color: '#dbf2d9' },
-                                    { title: 'Respiración', value: 20, color: '#dddee8' },
-                                ]}/>
+                                    data={mostCategories}/>
                             </div>
                             <div className="column">
                                 <ul className="labels">
