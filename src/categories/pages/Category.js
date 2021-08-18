@@ -47,9 +47,9 @@ const Category = props => {
 
     const handleGoContent = () => {
         if (type === 'single') {
-            history.push('/content-single')
+            history.push(`/content-single/${props.match.params.id}`)
         } else if (type === 'chapter') {
-            history.push('/content-chapter')
+            history.push(`/content-chapter/${props.match.params.id}`)
         }
     }
 

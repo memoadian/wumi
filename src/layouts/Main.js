@@ -70,8 +70,8 @@ const Main = () => {
                         <Route exact path="/notifications" component={Notifications} />
                         <Route exact path="/profile" component={Profile} />
                         <Route exact path="/category/:id" component={Category} />
-                        <Route exact path="/content-single" component={NewContentSingle} />
-                        <Route exact path="/content-chapter" component={NewContentChapter} />
+                        <Route exact path="/content-single/:cat_id" component={NewContentSingle} />
+                        <Route exact path="/content-chapter/:cat_id" component={NewContentChapter} />
                     </Switch>
                 </ContentBody>
             </Router>
