@@ -1,4 +1,5 @@
 import React, {useContext, useEffect, useState} from 'react'
+import axios from 'axios'
 import Card from 'shared/components/Card'
 import { PieChart } from 'react-minimal-pie-chart'
 import { AuthContext } from 'shared/context/auth-context'
@@ -6,7 +7,6 @@ import CardWithHeader from 'shared/components/CardWithHeader'
 import CardMulti from 'shared/components/CardMulti'
 import DataTable from 'react-data-table-component';
 import getStatsCategories from 'shared/helpers/getStatsCategories'
-import getUsers from 'shared/helpers/getUsers'
 
 const Dashboard = () => {
 
@@ -22,10 +22,18 @@ const Dashboard = () => {
                 setMostCategories(cats)
             })
 
-        getUsers(auth.token)
-            .then(data => {
-                setCountUsers(data.results.length)
+        const fetchUsers = async () => {
+            const response = await axios({
+                headers: {
+                    Authorization: `Bearer ${auth.token}`
+                },
+                baseURL: 'https://api.wumi.app/api/v1/users/',
+                method: 'GET',
             })
+
+            setCountUsers(response.data.count)
+        }
+        fetchUsers()
     }, [auth])
 
     const data = [

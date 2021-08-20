@@ -1,8 +1,8 @@
 import React, {useEffect, useContext, useState, useMemo } from 'react'
+import axios from 'axios'
 import { AuthContext } from 'shared/context/auth-context'
 import DataTable from 'react-data-table-component'
 import styled from 'styled-components'
-import getUsers from 'shared/helpers/getUsers'
 import Modal from 'react-modal'
 
 const Users = () => {
@@ -18,10 +18,18 @@ const Users = () => {
 
     useEffect(() => {
         if (!auth) { return }
-        getUsers(auth.token)
-            .then((data) => {
-                setUsers(data)
+        const fetchUsers = async () => {
+            const response = await axios({
+                headers: {
+                    Authorization: `Bearer ${auth.token}`
+                },
+                baseURL: 'https://api.wumi.app/api/v1/users/',
+                method: 'GET',
             })
+
+            setUsers(response.data.results)
+        }
+        fetchUsers()
     }, [auth])
 
     const onRowClicked = (row, event) => { 

@@ -10,7 +10,9 @@ import Input from 'shared/components/FormElements/Input'
 import Loader from 'shared/UIElements/Loader'
 import axios from 'axios'
 
-const NewContentChapter = props => {
+import './Form.css'
+
+const EditContentSingle = props => {
     const history = useHistory()
     const auth = useContext(AuthContext)
     const [isLoading, setIsLoading] = useState(false)
@@ -111,8 +113,8 @@ const NewContentChapter = props => {
                 <button className="button right-h1" onClick={submitHandler}>Guardar</button>
             </div>
             <div className="card no-margin">
-                {isLoading && <Loader asOverlay />}
                 {error}
+                {isLoading && <Loader asOverlay />}
                 <form onSubmit={submitHandler}>
                     <div className="columns">
                         <div className="column">
@@ -187,4 +189,4 @@ const NewContentChapter = props => {
     )
 }
 
-export default NewContentChapter
+export default EditContentSingle

@@ -4,15 +4,18 @@ import Scrollbars from 'react-custom-scrollbars-2'
 import Modal from 'react-modal'
 import CardCategory from 'categories/components/CardCategory'
 import { AuthContext } from 'shared/context/auth-context'
+import Loader from 'shared/UIElements/Loader'
 
 const Categories = () => {
     const auth = useContext(AuthContext)
+    const [isLoading, setIsLoading] = useState(false)
     const [openModal, setOpenModal] = useState(false)
     const [data, setData] = useState([])
 
     useEffect(() => {
         if (!auth.token) {return}
         const fetchCategories = async () => {
+            setIsLoading(true)
             const response = await axios({
                 headers: {
                     Authorization: `Bearer ${auth.token}`
@@ -22,6 +25,7 @@ const Categories = () => {
             })
 
             setData(response.data.results)
+            setIsLoading(false)
         }
         fetchCategories()
     }, [auth])
@@ -63,6 +67,7 @@ const Categories = () => {
                 <button className="button right-h1" onClick={handleOpenModal} >Nueva Categoría</button>
             </div>
             <div className="card no-margin">
+                {isLoading && <Loader asOverlay />}
                 <Scrollbars
                     style={{ height: 650}}
                     renderTrackHorizontal={props => <div {...props} style={{display: 'none'}} />}

@@ -6,19 +6,24 @@ import cat2 from 'assets/cat2.png'
 import Modal from 'react-modal'
 import DataTable from 'react-data-table-component';
 import { AuthContext } from 'shared/context/auth-context'
-
+import Loader from 'shared/UIElements/Loader'
 import './Category.css'
+import { NavLink, useLocation } from 'react-router-dom'
 
 const Category = props => {
     const auth = useContext(AuthContext)
     const history = useHistory()
+    const location = useLocation()
+    const [title, setTitle] = useState('')
+    const [isLoading, setIsLoading] = useState(false)
     const [openModal, setOpenModal] = useState(false)
     const [type, setType] = useState('')
     const [data, setData] = useState([])
 
     useEffect(() => {
         if (!auth.token) {return}
-        const getCategory = async () => {
+        const getCategoryContent = async () => {
+            setIsLoading(true)
             const response = await axios({
                 headers: {
                     Authorization: `Bearer ${auth.token}`
@@ -27,8 +32,23 @@ const Category = props => {
                 method: 'GET',
             })
 
-            console.log(response.data.results)
             setData(response.data.results)
+            setIsLoading(false)
+        }
+        getCategoryContent()
+
+        const getCategory = async () => {
+            setIsLoading(true)
+            const response = await axios({
+                headers: {
+                    Authorization: `Bearer ${auth.token}`
+                },
+                baseURL: `https://api.wumi.app/api/v1/catalog/categories/${props.match.params.id}/`,
+                method: 'GET',
+            })
+
+            setTitle(response.data.title)
+            setIsLoading(false)
         }
         getCategory()
     }, [auth, props.match.params.id])
@@ -100,20 +120,25 @@ const Category = props => {
         name: 'Status',
         selector: row => row.cstatus.title,
         sortable: true,
-    }];
+    },
+    {
+        name: 'Poster Link',
+        button: true,
+        cell: row => <NavLink to={`edit-single/${row.id}`}>Edit</NavLink>,
+    }]
 
     return (
         <div>
             <div className="title-h1">
-                {data[0] && (<h1>{data[0].category.title}</h1>)}
+                <h1>{title}</h1>
                 <button className="button right-h1" onClick={handleOpenModal} >Nuevo Contenido</button>
             </div>
             <div className="card no-margin">
+                {isLoading && <Loader asOverlay />}
                 <div>
-                    <DataTable
+                    {data && <DataTable
                         columns={columns}
-                        data={data}
-                    />
+                        data={data}/>}
                 </div>
             </div>
             <Modal

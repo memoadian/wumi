@@ -12,6 +12,7 @@ import Categories from '../categories/pages/Categories'
 import Category from '../categories/pages/Category'
 import NewContentSingle from '../categories/pages/NewContentSingle'
 import NewContentChapter from '../categories/pages/NewContentChapter'
+import EditContentSingle from 'categories/pages/EditContentSingle'
 import Home from '../home/pages/Home'
 import Login from '../login/pages/Login'
 import Notifications from '../notifications/pages/Notifications'
@@ -72,6 +73,7 @@ const Main = () => {
                         <Route exact path="/category/:id" component={Category} />
                         <Route exact path="/content-single/:cat_id" component={NewContentSingle} />
                         <Route exact path="/content-chapter/:cat_id" component={NewContentChapter} />
+                        <Route exact path="/edit-single/:id" component={EditContentSingle} />
                     </Switch>
                 </ContentBody>
             </Router>

@@ -1,5 +1,4 @@
 import React, { useState, useContext, useEffect } from 'react'
-import { VALIDATOR_REQUIRED } from 'shared/utils/validator'
 import { useForm } from 'shared/hooks/form-hook'
 import { useHistory } from 'react-router-dom'
 import { AuthContext } from 'shared/context/auth-context'
@@ -8,6 +7,7 @@ import getStatus from "shared/helpers/getStatus"
 import getLevels from 'shared/helpers/getLevels'
 import ImageUpload from 'shared/components/FormElements/ImageUpload'
 import Input from 'shared/components/FormElements/Input'
+import Loader from 'shared/UIElements/Loader'
 import axios from 'axios'
 
 import './Form.css'
@@ -94,8 +94,7 @@ const NewContentSingle = props => {
             setIsLoading(false)
                 
             if (resp.status === 200) {
-                console.log(resp.data)
-                history.replace(`/category/${resp.data.category.id}`)
+                history.replace(`/edit-single/${resp.id}`)
             } else {
                 //setError(resp)
                 console.log(resp.status)
@@ -113,6 +112,7 @@ const NewContentSingle = props => {
                 <button className="button right-h1" onClick={submitHandler}>Guardar</button>
             </div>
             <div className="card no-margin">
+                {isLoading && <Loader asOverlay />}
                 {error}
                 <form onSubmit={submitHandler}>
                     <div className="columns">
