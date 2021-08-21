@@ -195,6 +195,9 @@ h1 span {
   padding: 0 30px;
   font-weight: bold;
 }
+.button[disabled] {
+  background: #ccc !important;
+}
 .button:active,
 .button:hover,
 .button:visited,

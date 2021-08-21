@@ -106,7 +106,7 @@ const Login = () => {
                                 onInput={inputHandler}/>
                         </div>
                         <span className="forget">¿Olvidé mi contraseña?</span>
-                        <button disabled={!formState.isValid}  >Comenzar</button>
+                        <button disabled={!formState.isValid}>Comenzar</button>
                     </form>
                 </div>
             </div>

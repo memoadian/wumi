@@ -1,10 +1,29 @@
-import React, {useState} from 'react'
-import DataTable from 'react-data-table-component';
-import DataTableExtensions from 'react-data-table-component-extensions';
-import Modal from 'react-modal';
+import React, { useState, useContext } from 'react'
+import DataTable from 'react-data-table-component'
+import DataTableExtensions from 'react-data-table-component-extensions'
+import Modal from 'react-modal'
+import Input from 'shared/components/FormElements/Input'
+import Loader from 'shared/UIElements/Loader'
+import axios from 'axios'
+import { AuthContext } from 'shared/context/auth-context'
+import { useForm } from 'shared/hooks/form-hook'
+import { VALIDATOR_REQUIRED } from 'shared/utils/validator'
 
 const Notifications = () => {
+    const auth = useContext(AuthContext)
+    const [isLoading, setIsLoading] = useState(false)
+    const [error, setError] = useState()
     const [openModal, setOpenModal] = useState(false)
+    const [formState, inputHandler] = useForm({
+        title: {
+            value: '',
+            isValid: false
+        },
+        subtitle: {
+            value: '',
+            isValid: false
+        },
+    }, false)    
 
     const handleOpenModal = () => {
         setOpenModal(true)
@@ -12,6 +31,40 @@ const Notifications = () => {
 
     const handleCloseModal = () => {
         setOpenModal(false)
+    }
+
+    const notificationSubmit = async event => {
+        event.preventDefault()
+
+        setIsLoading(true)
+
+        try {
+            const response = await axios({
+                headers: {
+                    Authorization: `Bearer ${auth.token}`
+                },
+                baseURL: 'https://api.wumi.app/api/v1/notifications/',
+                method: 'POST',
+                data: {
+                    title: formState.inputs.title.value,
+                    subtitle: formState.inputs.subtitle.value,
+                    user_id: null,
+                    segments: 'active'
+                }
+            })
+            
+            setIsLoading(false)
+
+            if (response.status === 200) {
+                console.log(response.data)
+            } else {
+                console.log(response)
+            }
+        } catch (err) {
+            console.log(err.response.data)
+            setIsLoading(false)
+            setError(err.response.data.detail || 'Something went wrong, please try again.')
+        }
     }
 
     const customStyles = {
@@ -49,10 +102,7 @@ const Notifications = () => {
         },
     };
 
-    const data = [
-        { title: 'Bienvenidos a WUMI', content: 'Lorem ipsum...', date: '20.06.2021' },
-        { title: 'Nueva Meditación sobre sanación', content: '...', date: '20.06.2021' },
-    ];
+    const data = [];
 
     const columns = [
     {
@@ -98,22 +148,37 @@ const Notifications = () => {
                             />
                         </DataTableExtensions>
                         <Modal
+                            ariaHideApp={false}
                             isOpen={openModal}
                             style={customStyles}
                             onRequestClose={handleCloseModal}
                             overlayClassName="Overlay">
+                            {isLoading && <Loader asOverlay />}
                             <h1>Nueva Notificación</h1>
                             <form className="form-modal">
-                                <label>Título</label>
-                                <input type="text" />
-                                <label>Contenido</label>
-                                <textarea name="" id="" cols="30" rows="10"></textarea>
-                                <label>Link (opcional)</label>
-                                <input type="text" />
+                                <Input
+                                    id="title"
+                                    label="Título"
+                                    validators={[VALIDATOR_REQUIRED()]}
+                                    errorText="Este campo es obligatorio"
+                                    onInput={inputHandler}
+                                />
+                                <Input
+                                    id="subtitle"
+                                    label="Subtítulo"
+                                    validators={[VALIDATOR_REQUIRED()]}
+                                    errorText="Este campo es obligatorio"
+                                    onInput={inputHandler}
+                                />
                                 <div className="columns">
                                     <div className="column buttons">
                                         <button className="button cancel">Cancelar</button>
-                                        <button className="button submit">Enviar</button>
+                                        <button
+                                            onClick={notificationSubmit}
+                                            disabled={!formState.isValid}
+                                            className="button submit">
+                                            Enviar
+                                        </button>
                                     </div>
                                 </div>
                             </form>
