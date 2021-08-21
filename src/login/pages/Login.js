@@ -62,6 +62,7 @@ const Login = () => {
 
     return (
         <div className="columns is-centered page-login">
+            {isLoading && <Loader asOverlay />}
             <div className="logo">
                 <img src={logo} alt="" width="68"/>
                 <p>WUMI</p>
@@ -72,7 +73,6 @@ const Login = () => {
                     Inicia sesión para configurar, editar y crear nuevo contenido
                 </div>
                 <div className="form-login">
-                    {isLoading && <Loader asOverlay />}
                     <p className="error">{error}</p>
                     <form onSubmit={authSubmitHandler}>
                         <div className="icon-wrapper">
@@ -105,7 +105,7 @@ const Login = () => {
                                 errorText="Este campo es obligatorio y requiere al menos 8 caractéres"
                                 onInput={inputHandler}/>
                         </div>
-                        <span class="forget">¿Olvidé mi contraseña?</span>
+                        <span className="forget">¿Olvidé mi contraseña?</span>
                         <button disabled={!formState.isValid}  >Comenzar</button>
                     </form>
                 </div>

@@ -30,7 +30,7 @@ const Input = props => {
         isValid: props.valid || false
     })
 
-    const { id, onInput} = props
+    const { id, onInput, } = props
     const { value, isValid } = inputState
 
     useEffect(() => {
@@ -57,21 +57,21 @@ const Input = props => {
         switch (props.element) {
             case 'textarea':
                 return <textarea
-                    id={props.id}
+                    id={id}
                     onChange={changeHandler}
                     onBlur={touchHandler}
                     value={inputState.value}
                 />
             case 'select':
                 return <select
-                    id={props.id}
+                    id={id}
                     onChange={changeHandler}
                     onBlur={touchHandler}
                     value={inputState.value}
                 >{props.children}</select>
             default:
                 return <input 
-                    id={props.id}
+                    id={id}
                     type={props.type}
                     placeholder={props.placeholder}
                     onChange={changeHandler}

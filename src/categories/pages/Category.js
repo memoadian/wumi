@@ -1,19 +1,18 @@
 import { useState, useContext, useEffect } from 'react'
 import { useHistory } from 'react-router'
+import { AuthContext } from 'shared/context/auth-context'
+import { NavLink } from 'react-router-dom'
 import axios from 'axios'
 import cat1 from 'assets/cat1.png'
 import cat2 from 'assets/cat2.png'
 import Modal from 'react-modal'
 import DataTable from 'react-data-table-component';
-import { AuthContext } from 'shared/context/auth-context'
 import Loader from 'shared/UIElements/Loader'
 import './Category.css'
-import { NavLink, useLocation } from 'react-router-dom'
 
 const Category = props => {
     const auth = useContext(AuthContext)
     const history = useHistory()
-    const location = useLocation()
     const [title, setTitle] = useState('')
     const [isLoading, setIsLoading] = useState(false)
     const [openModal, setOpenModal] = useState(false)
@@ -124,7 +123,7 @@ const Category = props => {
     {
         name: 'Poster Link',
         button: true,
-        cell: row => <NavLink to={`edit-single/${row.id}`}>Edit</NavLink>,
+        cell: row => <NavLink to={`/edit-single/${row.id}`}>Edit</NavLink>,
     }]
 
     return (

@@ -1,0 +1,34 @@
+.audio-upload button {
+  background: #003249;
+  color: #fff;
+  border: none;
+  width: 40px;
+  height: 40px;
+  border-radius: 5px;
+  position: absolute;
+  right: 0;
+  top: 0;
+}
+.audio-upload {
+  width: 100%;
+  position: relative;
+}
+.audio-upload__preview {
+  overflow: hidden;
+  width: 100%;
+  height: 13rem;
+  border: 1px solid #eee;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  margin-bottom: 1rem;
+}
+.audio-upload .desc {
+  padding: 10px;
+  height: 44px;
+}
+button {
+  border: none;
+  padding: 10px;
+}

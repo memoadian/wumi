@@ -6,6 +6,7 @@ import getContentTypes from "shared/helpers/getContentTypes"
 import getStatus from "shared/helpers/getStatus"
 import getLevels from 'shared/helpers/getLevels'
 import ImageUpload from 'shared/components/FormElements/ImageUpload'
+import AudioUpload from 'shared/components/FormElements/AudioUpload'
 import Input from 'shared/components/FormElements/Input'
 import Loader from 'shared/UIElements/Loader'
 import axios from 'axios'
@@ -20,6 +21,7 @@ const EditContentSingle = props => {
     const [contentTypes, setContentTypes] = useState([])
     const [status, setStatus] = useState([])
     const [levels, setLevels] = useState([])
+    const [data, setData] = useState(null)
     const [formState, inputHandler] = useForm({
         type_content_id: {
             value: '',
@@ -48,26 +50,41 @@ const EditContentSingle = props => {
     }, false)
 
     useEffect(() => {
-        if (!auth) { return }
-        getContentTypes(auth.token)
+        if (auth.token) {
+            getContentTypes(auth.token)
             .then(ct => {
                 setContentTypes(ct)
             })
 
-        getStatus(auth.token)
+            getStatus(auth.token)
             .then(status => {
                 setStatus(status)
             })
 
-        getLevels(auth.token)
-            .then(levels => {
+            getLevels(auth.token)
+            .then((levels) => {
                 setLevels(levels)
             })
+
+            const getContent = async () => {
+                setIsLoading(true)
+                const response = await axios({
+                    headers: {
+                        Authorization: `Bearer ${auth.token}`
+                    },
+                    baseURL: `https://api.wumi.app/api/v1/contents/${props.match.params.id}/`,
+                    method: 'GET',
+                })
+
+                setData(response.data)
+                setIsLoading(false)
+            }
+            getContent()
+        }
     }, [auth])
 
     const submitHandler = async e => {
         e.preventDefault()
-
         setIsLoading(true)
 
         const formData = new FormData()
@@ -115,6 +132,7 @@ const EditContentSingle = props => {
             <div className="card no-margin">
                 {error}
                 {isLoading && <Loader asOverlay />}
+                {data && 
                 <form onSubmit={submitHandler}>
                     <div className="columns">
                         <div className="column">
@@ -122,25 +140,32 @@ const EditContentSingle = props => {
                                 id="type_content_id"
                                 label="Tipo de contenido"
                                 element="select"
+                                value={data.type_content.id}
                                 validators={[]}
                                 onInput={inputHandler}>
                                     <option value="">Seleccionar</option>
                                     { contentTypes && 
-                                        contentTypes.map((ct) => {
-                                            return <option key={ct.id} value={ct.id}>{ct.title}</option>
-                                        })
+                                        contentTypes.map((ct) => 
+                                            <option
+                                                key={ct.id}
+                                                value={ct.id}>
+                                                {ct.title}
+                                            </option>
+                                        )
                                     }
                             </Input>
                             <Input
                                 id="title"
                                 label="Título"
                                 validators={[]}
+                                value={data.title}
                                 onInput={inputHandler}
                             />
                             <Input
                                 id="description"
                                 label="Description"
                                 element="textarea"
+                                value={data.description}
                                 validators={[]}
                                 onInput={inputHandler}
                             />
@@ -148,20 +173,30 @@ const EditContentSingle = props => {
                                 id="level_id"
                                 label="Nivel"
                                 element="select"
+                                value={data.level.id}
                                 validators={[]}
                                 onInput={inputHandler}>
                                     <option value="">Seleccionar</option>
                                     { levels &&
-                                        levels.map((level) => {
-                                            return <option key={level.id} value={level.id}>{level.title}</option>
-                                        })
+                                        levels.map((level) =>
+                                            <option
+                                                key={level.id}
+                                                value={level.id}>
+                                                {level.title}
+                                            </option>
+                                        )
                                     }
                             </Input>
                         </div>
                         <div className="column">
+                            <AudioUpload
+                                id="audio"
+                                contentId={props.match.params.id}
+                            />
                             <ImageUpload 
                                 center
                                 id="image"
+                                value={data.image}
                                 onInput={inputHandler}
                                 errorText="Selecciona una imagen"
                             />
@@ -169,13 +204,18 @@ const EditContentSingle = props => {
                                 id="cstatus_id"
                                 label="Status"
                                 element="select"
+                                value={data.cstatus.id}
                                 validators={[]}
                                 onInput={inputHandler}>
                                     <option value="">Seleccionar</option>
                                     { status &&
-                                        status.map((status) => {
-                                            return <option key={status.id} value={status.id}>{status.title}</option>
-                                        })
+                                        status.map((status) =>
+                                            <option
+                                                key={status.id}
+                                                value={status.id}>
+                                                {status.title}
+                                            </option>
+                                        )
                                     }
                             </Input>
                         </div>
@@ -183,7 +223,7 @@ const EditContentSingle = props => {
 
                         </div>
                     </div>
-                </form>
+                </form>}
             </div>
         </div>
     )
