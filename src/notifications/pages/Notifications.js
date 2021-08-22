@@ -138,6 +138,7 @@ const Notifications = () => {
             <div className="columns">
                 <div className="column">
                     <div className="card no-padding">
+                        {error}
                         <DataTableExtensions {...dataTable} 
                                 filterPlaceholder="Buscar"
                             >

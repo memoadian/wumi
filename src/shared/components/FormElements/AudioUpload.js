@@ -9,10 +9,11 @@ import './AudioUpload.css'
 const AudioUpload = props => {
 
     const auth = useContext(AuthContext)
+    const [error, setError] = useState('')
     const [file, setFile] = useState(null)
     const [isValid, setIsValid] = useState(false)
     const [isLoading, setIsLoading] = useState(false)
-    const [formState, inputHandler] = useForm({
+    const [formState] = useForm({
         extension: {
             value: '',
             isValid: false
@@ -26,15 +27,12 @@ const AudioUpload = props => {
 
     const pickHandler = event => {
         let pickedFile
-        let fileIsValid = isValid
         if (event.target.files && event.target.files.length === 1) {
             pickedFile = event.target.files[0]
             setFile(pickedFile)
             setIsValid(true)
-            fileIsValid = true
         } else {
             setIsValid(false)
-            fileIsValid = false
         }
     }
 
@@ -72,7 +70,7 @@ const AudioUpload = props => {
             }
         } catch (err) {
             setIsLoading(false)
-            //setError(err.errors || 'Something went wrong, please try again.')
+            setError(err.errors || 'Something went wrong, please try again.')
         }
     }
 
@@ -101,16 +99,20 @@ const AudioUpload = props => {
 
             setIsLoading(false)
 
-            if (resp.status == 201) {
+            if (resp.status === 201) {
 
+            } else {
+                setError(resp.data || 'Something went wrong, please try again.')
             }
         } catch (err) {
-            
+            setIsLoading(false)
+            setError(err.errors || 'Something went wrong, please try again.')
         }
     }
 
     return (
         <div className="form-control">
+            {error}
             {isLoading && <Loader asOverlay />}
             <input
                 id={props.id}

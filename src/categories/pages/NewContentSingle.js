@@ -48,7 +48,7 @@ const NewContentSingle = props => {
     }, false)
 
     useEffect(() => {
-        if (!auth) { return }
+        if (!auth.token) { return }
         getContentTypes(auth.token)
             .then(ct => {
                 setContentTypes(ct)

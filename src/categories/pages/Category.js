@@ -121,7 +121,7 @@ const Category = props => {
         sortable: true,
     },
     {
-        name: 'Poster Link',
+        name: '',
         button: true,
         cell: row => <NavLink to={`/edit-single/${row.id}`}>Edit</NavLink>,
     }]

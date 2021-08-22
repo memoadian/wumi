@@ -1,0 +1,25 @@
+.sortitem {
+  position: relative;
+}
+.gray {
+  width: 50px;
+}
+.gray .icon {
+  top: 16px;
+  left: 5px;
+}
+.close {
+  position: absolute;
+  background: #e5fffe;
+  display: inline-block !important;
+  width: 28px;
+  height: 28px;
+  text-align: center;
+  border-radius: 100%;
+  cursor: pointer;
+}
+.close .icon {
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) !important;
+}

@@ -1,5 +1,9 @@
 import { useRef } from 'react';
 import { useDrag, useDrop } from 'react-dnd';
+import { mdiDragVariant } from '@mdi/js'
+import { mdiClose } from '@mdi/js'
+import Icon from '@mdi/react'
+import './SortItem.css'
 
 const style = {
     backgroundColor: '#f6f6f6',
@@ -69,14 +73,32 @@ const SortItem = ({id, index, moveCard, children}) => {
     drag(drop(ref));
 
     return (
-        <div style={{...style, opacity}} className="sortitem" data-handler-id={handlerId} ref={ref} >
+        <div 
+            style={{...style, opacity}} 
+            className="sortitem" 
+            data-handler-id={handlerId} 
+            ref={ref} >
             <div className="columns">
-                <div className="column is-1 gray"></div>
+                <div className="gray">
+                    <Icon 
+                        className="icon"
+                        path={mdiDragVariant}
+                        size={0.8}
+                        vertical
+                        rotate={180}/>
+                </div>
                 <div className="column">
                     {children}
                 </div>
                 <div className="column is-2">
-                    <span className="close">X</span>
+                    <span className="close">
+                        <Icon 
+                            className="icon"
+                            path={mdiClose}
+                            size={0.8}
+                            vertical
+                            rotate={180}/>
+                    </span>
                 </div>
             </div>
         </div>

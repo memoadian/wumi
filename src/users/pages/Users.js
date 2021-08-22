@@ -5,6 +5,37 @@ import DataTable from 'react-data-table-component'
 import styled from 'styled-components'
 import Modal from 'react-modal'
 
+import './Users.css'
+
+const TextField = styled.input`
+    height: 32px;
+    width: 200px;
+    border-radius: 3px;
+    border-top-left-radius: 5px;
+    border-bottom-left-radius: 5px;
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+    border: 1px solid #e5e5e5;
+    padding: 0 32px 0 16px;
+
+    &:hover {
+        cursor: pointer;
+    }
+`
+
+const ClearButton = styled.button`
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+    border-top-right-radius: 5px;
+    border-bottom-right-radius: 5px;
+    height: 34px;
+    width: 32px;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+`
+
 const Users = () => {
 
     const auth = useContext(AuthContext)
@@ -12,12 +43,13 @@ const Users = () => {
     const [resetPaginationToggle, setResetPaginationToggle] = useState(false)
     const [filterText, setFilterText] = useState('')
     const [users, setUsers] = useState([])
+    const [userSelected, setUserSelected] = useState(null)
     const filteredUsers = users.filter(item =>
         item.first_name && item.first_name.toLowerCase().includes(filterText.toLocaleLowerCase())
     )
 
     useEffect(() => {
-        if (!auth) { return }
+        if (!auth.token) { return }
         const fetchUsers = async () => {
             const response = await axios({
                 headers: {
@@ -32,7 +64,8 @@ const Users = () => {
         fetchUsers()
     }, [auth])
 
-    const onRowClicked = (row, event) => { 
+    const onRowClicked = (row, event) => {
+        setUserSelected(row)
         setOpenModal(true)
     }
 
@@ -85,35 +118,6 @@ const Users = () => {
         },
     }
 
-    const TextField = styled.input`
-        height: 32px;
-        width: 200px;
-        border-radius: 3px;
-        border-top-left-radius: 5px;
-        border-bottom-left-radius: 5px;
-        border-top-right-radius: 0;
-        border-bottom-right-radius: 0;
-        border: 1px solid #e5e5e5;
-        padding: 0 32px 0 16px;
-
-        &:hover {
-            cursor: pointer;
-        }
-    `;
-
-    const ClearButton = styled.button`
-        border-top-left-radius: 0;
-        border-bottom-left-radius: 0;
-        border-top-right-radius: 5px;
-        border-bottom-right-radius: 5px;
-        height: 34px;
-        width: 32px;
-        text-align: center;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-    `;
-
     const FilterComponent = ({ filterText, onFilter, onClear }) => (
         <>
             <TextField
@@ -139,7 +143,7 @@ const Users = () => {
 		};
 
 		return (
-			<FilterComponent onFilter={e => setFilterText(e.target.value)} onClear={handleClear} filterText={filterText} />
+			<FilterComponent onFilter={e => setFilterText(e.target.value)}  />
 		);
 	}, [filterText, resetPaginationToggle]);
 
@@ -158,6 +162,7 @@ const Users = () => {
 			                    paginationResetDefaultPage={resetPaginationToggle}
                                 subHeader
                                 subHeaderComponent={subHeaderComponentMemo}
+                                persistTableHead
                                 onRowClicked={onRowClicked}/>
                             <Modal
                                 ariaHideApp={false}
@@ -166,13 +171,47 @@ const Users = () => {
                                 onRequestClose={handleCloseModal}
                                 overlayClassName="Overlay">
                                 <h1>Información de perfil</h1>
-                                <form className="form-modal">
-                                    <div className="columns">
+                                {userSelected &&
+                                <div className="columns">
+                                    <div className="column">
+                                        <div className="row">
+                                            <p>Fecha de Creación</p>
+                                            <span>{userSelected.date_joined}</span>
+                                        </div>
+                                        <div className="row">
+                                            <p>Nombre</p>
+                                            <span>{userSelected.first_name}</span>
+                                        </div>
+                                        <div className="row">
+                                            <p>Apellido</p>
+                                            <span>{userSelected.last_name}</span>
+                                        </div>
+                                        <div className="row">
+                                            <p>Correo</p>
+                                            <span>{userSelected.email}</span>
+                                        </div>
+                                        <div className="row">
+                                            <p>Género</p>
+                                            <span>{userSelected.gender.title}</span>
+                                        </div>
+                                        <div className="row">
+                                            <p>Rango de edad</p>
+                                            <span>{userSelected.age.title}</span>
+                                        </div>
+                                        <div className="row">
+                                            <p>Momento</p>
+                                            <span>{userSelected.my_time.title}</span>
+                                        </div>
+                                        <div className="row">
+                                            <p>Área de oportunidad</p>
+                                            <span>{userSelected.opportunity.title}</span>
+                                        </div>
                                     </div>
-                                    <div className="columns">
+                                    <div className="column">
 
                                     </div>
-                                </form>
+                                </div>
+                                }
                             </Modal>
                         </div>
                     </div>
