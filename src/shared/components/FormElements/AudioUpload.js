@@ -40,6 +40,14 @@ const AudioUpload = props => {
         filePickerRef.current.click()
     }
 
+    const url = (props.isChapter) 
+    ? 'https://api.wumi.app/api/v1/presigned/chapter/upload/'
+    : 'https://api.wumi.app/api/v1/presigned/content/upload/'
+
+    const data = (props.isChapter)
+    ? JSON.stringify({extension: 'mp3', chapter_id: props.contentId})
+    : JSON.stringify({extension: 'mp3', content_id: props.contentId})
+
     const submitPresigned = async e => {
         e.preventDefault()
         setIsLoading(true)
@@ -50,13 +58,10 @@ const AudioUpload = props => {
                     Authorization: `Bearer ${auth.token}`,
                     'Content-Type': 'application/json',
                 },
-                baseURL: 'https://api.wumi.app/api/v1/presigned/content/upload/',
+                baseURL: url,
                 method: 'POST',
                 mode: 'no-cors',
-                data: JSON.stringify({
-                    extension: 'mp3',
-                    content_id: props.contentId
-                })
+                data: data
             })
 
             setIsLoading(false)

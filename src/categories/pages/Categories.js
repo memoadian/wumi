@@ -54,9 +54,13 @@ const Categories = () => {
         },
     }
 
-    const listItems = data.map(({id, title, color}) => 
+    const listItems = data.map(({id, title, color, description}) => 
         <div key={id} className="column is-one-quarter-desktop is-half-tablet">
-            <CardCategory id={id} title={title} background={color} />
+            <CardCategory 
+                id={id} 
+                title={title} 
+                background={color} 
+                description={description} />
         </div>
     )
 

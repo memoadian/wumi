@@ -93,8 +93,8 @@ const NewContentSingle = props => {
 
             setIsLoading(false)
                 
-            if (resp.status === 200) {
-                history.replace(`/edit-single/${resp.id}`)
+            if (resp.status === 201) {
+                history.replace(`/edit-single/${resp.data.id}`)
             } else {
                 //setError(resp)
                 console.log(resp.status)

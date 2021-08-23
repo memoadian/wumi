@@ -16,7 +16,7 @@ const Dashboard = () => {
     const [countUsers, setCountUsers] = useState([])
 
     useEffect(() => {
-        if (!auth) { return }
+        if (!auth.token) { return }
         getStatsCategories(auth.token)
             .then(cats => {
                 setMostCategories(cats)
@@ -36,12 +36,7 @@ const Dashboard = () => {
         fetchUsers()
     }, [auth])
 
-    const data = [
-        { id: 1, tipo: 'Escaneo Coporal', vistas: '342' },
-        { id: 2, tipo: 'Lorem ipsum', vistas: '342' },
-        { id: 3, tipo: 'lorem ipsum', vistas: '342' },
-        { id: 4, tipo: 'Escaneo Coporal', vistas: '342' },
-    ];
+    const data = []
 
     const columns = [
     {
@@ -58,20 +53,29 @@ const Dashboard = () => {
         sortable: true,
         right: true,
     },
-    ];
+    ]
+
+    const total = mostCategories.reduce((sum, {value}) => sum + value, 0)
+    const labels = mostCategories.map(m => 
+        <li>
+            <span className="circle"
+                style={{backgroundColor: m.color}}>
+            </span> {m.title}
+            <span className="num">
+                {Math.round((m.value/total)*100)}%
+            </span>
+        </li>
+    )
 
     return (
         <div>
             <h1>Dashboard</h1>
             <div className="columns">
-                <div className="column">
+                <div className="column is-one-quarter">
                     <Card title={countUsers} subtitle="Usuarios" indicator=""/>
                 </div>
                 <div className="column is-three-fifths">
                     <CardMulti/>
-                </div>
-                <div className="column">
-                    <Card title="1,369" subtitle="Usuarios" indicator=""/>
                 </div>
             </div>
             <div className="columns">
@@ -85,17 +89,13 @@ const Dashboard = () => {
                             </div>
                             <div className="column">
                                 <ul className="labels">
-                                    <li><span className="circle" style={{backgroundColor: '#fcece5'}}></span> Cuerpo <span className="num">20%</span></li>
-                                    <li><span className="circle" style={{backgroundColor: '#fdf8dd'}}></span> Sanación <span className="num">20%</span></li>
-                                    <li><span className="circle" style={{backgroundColor: '#d8eaf9'}}></span> Descanso <span className="num">20%</span></li>
-                                    <li><span className="circle" style={{backgroundColor: '#dbf2d9'}}></span> Mente <span className="num">20%</span></li>
-                                    <li><span className="circle" style={{backgroundColor: '#dddee8'}}></span> Respiración <span className="num">20%</span></li>
+                                    {labels}
                                 </ul>
                             </div>
                         </div>
                     </CardWithHeader>
                 </div>
-                <div className="column is-two-thirds">
+                <div className="column is-three-fifths">
                     <CardWithHeader title="Meditaciones + vistas">
                         <DataTable
                             columns={columns}

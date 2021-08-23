@@ -170,7 +170,7 @@ const Home = () => {
                                 type="button"
                                 className="button full"
                                 onClick={handleOpenModal}>
-                                Agregar Contenido
+                                Agregar Categoría
                             </button>
 
                             <DndProvider backend={HTML5Backend}>

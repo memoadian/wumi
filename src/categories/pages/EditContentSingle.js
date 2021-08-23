@@ -52,19 +52,19 @@ const EditContentSingle = props => {
     useEffect(() => {
         if (auth.token) {
             getContentTypes(auth.token)
-            .then(ct => {
-                setContentTypes(ct)
-            })
+                .then(ct => {
+                    setContentTypes(ct)
+                })
 
             getStatus(auth.token)
-            .then(status => {
-                setStatus(status)
-            })
+                .then(status => {
+                    setStatus(status)
+                })
 
             getLevels(auth.token)
-            .then((levels) => {
-                setLevels(levels)
-            })
+                .then((levels) => {
+                    setLevels(levels)
+                })
 
             const getContent = async () => {
                 setIsLoading(true)
@@ -191,6 +191,7 @@ const EditContentSingle = props => {
                         <div className="column">
                             <AudioUpload
                                 id="audio"
+                                isChapter={false}
                                 contentId={props.match.params.id}
                             />
                             <ImageUpload 

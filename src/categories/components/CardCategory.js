@@ -1,7 +1,7 @@
 import React from 'react'
 import { NavLink } from 'react-router-dom'
 
-const CardCategory = ({id, title, background}) => {
+const CardCategory = ({id, title, background, description}) => {
     return (
         <>
             <div className="card-category">
@@ -9,10 +9,7 @@ const CardCategory = ({id, title, background}) => {
                     {title}
                 </div>
                 <div className="card-category-body">
-                    <p>Meditaciones totales:</p>
-                    <p>23</p>
-                    <p>Capsulas totales:</p>
-                    <p>5</p>
+                    {description}
                 </div>
                 <div className="card-category-footer">
                     <NavLink to={`/category/${id}`}>

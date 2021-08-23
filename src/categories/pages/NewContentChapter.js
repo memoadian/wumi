@@ -8,6 +8,7 @@ import getLevels from 'shared/helpers/getLevels'
 import ImageUpload from 'shared/components/FormElements/ImageUpload'
 import Input from 'shared/components/FormElements/Input'
 import Loader from 'shared/UIElements/Loader'
+import Modal from 'react-modal'
 import axios from 'axios'
 
 const NewContentChapter = props => {
@@ -18,6 +19,7 @@ const NewContentChapter = props => {
     const [contentTypes, setContentTypes] = useState([])
     const [status, setStatus] = useState([])
     const [levels, setLevels] = useState([])
+    const [openModal, setOpenModal] = useState(false)
     const [formState, inputHandler] = useForm({
         type_content_id: {
             value: '',
@@ -46,7 +48,7 @@ const NewContentChapter = props => {
     }, false)
 
     useEffect(() => {
-        if (!auth) { return }
+        if (!auth.token) { return }
         getContentTypes(auth.token)
             .then(ct => {
                 setContentTypes(ct)
@@ -62,6 +64,14 @@ const NewContentChapter = props => {
                 setLevels(levels)
             })
     }, [auth])
+
+    const handleOpenModal = () => {
+        setOpenModal(true)
+    }
+
+    const handleCloseModal = () => {
+        setOpenModal(false)
+    }
 
     const submitHandler = async e => {
         e.preventDefault()
@@ -90,10 +100,10 @@ const NewContentChapter = props => {
             })
 
             setIsLoading(false)
-                
-            if (resp.status === 200) {
+
+            if (resp.status === 201) {
                 console.log(resp.data)
-                history.replace(`/category/${resp.data.category.id}`)
+                history.replace(`/edit-chapter/${resp.data.id}`)
             } else {
                 //setError(resp)
                 console.log(resp.status)
@@ -107,7 +117,7 @@ const NewContentChapter = props => {
     return (
         <div>
             <div className="title-h1">
-                <h1>Nuevo Contenido / Individual</h1>
+                <h1>Nuevo Contenido / Capítulos</h1>
                 <button className="button right-h1" onClick={submitHandler}>Guardar</button>
             </div>
             <div className="card no-margin">
