@@ -104,10 +104,10 @@ const AudioUpload = props => {
 
             setIsLoading(false)
 
-            if (resp.status === 201) {
+            if (resp.status === 200) {
 
             } else {
-                setError(resp.data || 'Something went wrong, please try again.')
+                setError(resp.data.message || 'Something went wrong, please try again.')
             }
         } catch (err) {
             setIsLoading(false)
@@ -117,7 +117,6 @@ const AudioUpload = props => {
 
     return (
         <div className="form-control">
-            {error}
             {isLoading && <Loader asOverlay />}
             <input
                 id={props.id}
