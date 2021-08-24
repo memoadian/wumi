@@ -52,6 +52,7 @@ const Login = () => {
                 auth.login(response.data.user, response.data.token)
             } else {
                 console.log(response)
+                setIsLoading(false)
             }
         } catch (err) {
             console.log(err.response.data)

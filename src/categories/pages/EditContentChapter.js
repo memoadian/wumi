@@ -25,6 +25,7 @@ const EditContentChapter = props => {
     const [levels, setLevels] = useState([])
     const [openModal, setOpenModal] = useState(false)
     const [data, setData] = useState(null)
+    const [chapter, setChapter] = useState(null)
     const [isEdit, setIsEdit] = useState(false)
     const [ID, setID] = useState(0)
     const [formState, inputHandler] = useForm({
@@ -109,6 +110,21 @@ const EditContentChapter = props => {
             setIsLoading(false)
         }
         getContent()
+
+        const getChapters = async () => {
+            setIsLoading(true)
+            const response = await axios({
+                headers: {
+                    Authorization: `Bearer ${auth.token}`
+                },
+                baseURL: `https://api.wumi.app/api/v1/chapters/?content=${props.match.params.id}`,
+                method: 'GET',
+            })
+
+            setChapter(response.data.results)
+            setIsLoading(false)
+        }
+        getChapters()
     }, [auth])
 
     const handleOpenModal = () => {
@@ -304,6 +320,9 @@ const EditContentChapter = props => {
                                 onClick={handleOpenModal}>
                                 Agregar Capitulo
                             </button>
+                            {chapter && chapter.map((chapter) => <div className="chapters">
+                                    {chapter.title}
+                                </div>)}
                             <Modal
                                 ariaHideApp={false}
                                 isOpen={openModal}

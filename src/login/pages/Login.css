@@ -24,3 +24,6 @@
   left: 10px;
   top: 10px;
 }
+input {
+  padding-left: 35px !important;
+}
