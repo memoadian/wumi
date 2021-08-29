@@ -1,52 +1,17 @@
-import React, {useEffect, useContext, useState, useMemo } from 'react'
-import axios from 'axios'
+import React, {useEffect, useContext, useState } from 'react'
 import { AuthContext } from 'shared/context/auth-context'
-import DataTable from 'react-data-table-component'
-import styled from 'styled-components'
+import axios from 'axios'
 import Modal from 'react-modal'
+import Table from 'shared/components/DataTable/Table'
 
 import './Users.css'
-
-const TextField = styled.input`
-    height: 32px;
-    width: 200px;
-    border-radius: 3px;
-    border-top-left-radius: 5px;
-    border-bottom-left-radius: 5px;
-    border-top-right-radius: 0;
-    border-bottom-right-radius: 0;
-    border: 1px solid #e5e5e5;
-    padding: 0 32px 0 16px;
-
-    &:hover {
-        cursor: pointer;
-    }
-`
-
-const ClearButton = styled.button`
-    border-top-left-radius: 0;
-    border-bottom-left-radius: 0;
-    border-top-right-radius: 5px;
-    border-bottom-right-radius: 5px;
-    height: 34px;
-    width: 32px;
-    text-align: center;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-`
 
 const Users = () => {
 
     const auth = useContext(AuthContext)
     const [openModal, setOpenModal] = useState(false)
-    const [resetPaginationToggle, setResetPaginationToggle] = useState(false)
-    const [filterText, setFilterText] = useState('')
     const [users, setUsers] = useState([])
     const [userSelected, setUserSelected] = useState(null)
-    const filteredUsers = users.filter(item =>
-        item.first_name && item.first_name.toLowerCase().includes(filterText.toLocaleLowerCase())
-    )
 
     useEffect(() => {
         if (!auth.token) { return }
@@ -64,43 +29,9 @@ const Users = () => {
         fetchUsers()
     }, [auth])
 
-    const onRowClicked = (row, event) => {
-        setUserSelected(row)
-        setOpenModal(true)
-    }
-
     const handleCloseModal = () => {
         setOpenModal(false)
     }
-
-    const columns = [{
-        name: 'Nombre(s)',
-        selector: row => row.first_name,
-    },
-    {
-        name: 'Apellidos',
-        selector: row => row.last_name,
-    },
-    {
-        name: 'Correo',
-        selector: row => row.email,
-    },
-    {
-        name: 'Género',
-        selector: row => row.gender.title,
-    },
-    {
-        name: 'Rango de Edad',
-        selector: row => row.age.title,
-    },
-    {
-        name: 'Momento',
-        selector: row => row.my_time.title,
-    },
-    {
-        name: 'Área de oportunidad',
-        selector: row => row.opportunity.title,
-    }]
 
     const customStyles = {
         content: {
@@ -118,34 +49,40 @@ const Users = () => {
         },
     }
 
-    const FilterComponent = ({ filterText, onFilter, onClear }) => (
-        <>
-            <TextField
-                id="search"
-                type="text"
-                placeholder="Filter By Name"
-                aria-label="Search Input"
-                value={filterText}
-                onChange={onFilter}
-            />
-            <ClearButton type="button" onClick={onClear}>
-                X
-            </ClearButton>
-        </>
-    )
+    const headers = [{
+        Header: 'Nombre(s)',
+        accessor: 'first_name',
+    },
+    {
+        Header: 'Apellidos',
+        accessor: 'last_name',
+    },
+    {
+        Header: 'Correo',
+        accessor: 'email',
+    },
+    {
+        Header: 'Género',
+        accessor: 'gender.title',
+    },
+    {
+        Header: 'Rango de Edad',
+        accessor: 'age.title',
+    },
+    {
+        Header: 'Momento',
+        accessor: 'my_time.title',
+    },
+    {
+        Header: 'Área de oportunidad',
+        accessor: 'opportunity.title',
+    }]
 
-	const subHeaderComponentMemo = useMemo(() => {
-		const handleClear = () => {
-			if (filterText) {
-				setResetPaginationToggle(!resetPaginationToggle);
-				setFilterText('');
-			}
-		};
-
-		return (
-			<FilterComponent onFilter={e => setFilterText(e.target.value)}  />
-		);
-	}, [filterText, resetPaginationToggle]);
+    const onRowClicked = (userData, e) => {
+        setUserSelected(userData)
+        console.log(userSelected)
+        setOpenModal(true)
+    }
 
     return (
         <div>
@@ -154,16 +91,13 @@ const Users = () => {
                 <div className="column">
                     <div className="card no-margin">
                         <div>
-                            <DataTable
-                                columns={columns}
-                                data={filteredUsers}
-                                customStyles={customStyles}
-                                pagination
-			                    paginationResetDefaultPage={resetPaginationToggle}
-                                subHeader
-                                subHeaderComponent={subHeaderComponentMemo}
-                                persistTableHead
-                                onRowClicked={onRowClicked}/>
+                            
+                            <Table
+                                dataHeaders={headers}
+                                dataBody={users}
+                                onRowClicked={onRowClicked}
+                            />
+
                             <Modal
                                 ariaHideApp={false}
                                 isOpen={openModal}
