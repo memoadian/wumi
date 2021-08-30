@@ -1,16 +1,34 @@
 import {useState, useContext, useEffect} from 'react'
+import { AuthContext } from 'shared/context/auth-context'
+import { useForm } from 'shared/hooks/form-hook'
 import axios from 'axios'
 import Scrollbars from 'react-custom-scrollbars-2'
 import Modal from 'react-modal'
 import CardCategory from 'categories/components/CardCategory'
-import { AuthContext } from 'shared/context/auth-context'
 import Loader from 'shared/UIElements/Loader'
+import Input from 'shared/components/FormElements/Input'
 
 const Categories = () => {
     const auth = useContext(AuthContext)
     const [isLoading, setIsLoading] = useState(false)
     const [openModal, setOpenModal] = useState(false)
-    const [data, setData] = useState([])
+    const [categories, setCategories] = useState([])
+    const [isEditMode, setIsEditMode] = useState(false)
+    const [categorySelected, setCategorySelected] = useState(null)
+    const [formState, inputHandler] = useForm({
+        title: {
+            value: '',
+            isValid: false
+        },
+        description: {
+            value: '',
+            isValid: false
+        },
+        color: {
+            value: '',
+            isValid: false
+        },
+    }, false)
 
     useEffect(() => {
         if (!auth.token) {return}
@@ -24,18 +42,68 @@ const Categories = () => {
                 method: 'GET',
             })
 
-            setData(response.data.results)
+            setCategories(response.data.results)
             setIsLoading(false)
         }
         fetchCategories()
     }, [auth])
 
-    const handleOpenModal = () => {
+    const handleOpenModal = (data) => {
+        if (data.editMode) {
+            setIsEditMode(true)
+        }
+        if (data.id !== null) {
+            setCategorySelected(categories.find(cat => cat.id === data.id))
+        }
         setOpenModal(true)
     }
 
     const handleCloseModal = () => {
+        if (isEditMode)
+            setIsEditMode(false)
         setOpenModal(false)
+    }
+
+    const submitCategory = async e => {
+        e.preventDefault()
+    }
+
+    const updateCategory = async e => {
+        e.preventDefault()
+
+        const formData = new FormData()
+        formData.append('title', formState.inputs.title.value)
+        formData.append('description', formState.inputs.description.value)
+        formData.append('color', formState.inputs.color.value)
+
+        console.log(formState.inputs.title.value)
+        console.log(formState.inputs.description.value)
+        console.log(formState.inputs.color.value)
+
+        try {
+            setIsLoading(true)
+            const resp = await axios({
+                headers: {
+                    Authorization: `Bearer ${auth.token}`
+                },
+                baseURL: `https://api.wumi.app/api/v1/catalog/categories/${categorySelected.id}/`,
+                method: 'PATCH',
+                mode: 'no-cors',
+                data: formData
+            })
+
+            setIsLoading(false)
+                
+            if (resp.status === 200) {
+                console.log(resp.data)
+            } else {
+                //setError(resp)
+                console.log(resp.status)
+            }
+        } catch (err) {
+            setIsLoading(false)
+            //setError(err.errors || 'Something went wrong, please try again.')
+        }
     }
 
     const customStyles = {
@@ -54,13 +122,17 @@ const Categories = () => {
         },
     }
 
-    const listItems = data.map(({id, title, color, description}) => 
-        <div key={id} className="column is-one-quarter-desktop is-half-tablet">
+    const listItems = categories.map(({id, title, color, description}) => 
+        <div
+            key={id}
+            className="column is-one-quarter-desktop is-half-tablet">
             <CardCategory 
                 id={id} 
                 title={title} 
                 background={color} 
-                description={description} />
+                description={description}
+                onClickEdit={handleOpenModal}
+            />
         </div>
     )
 
@@ -68,13 +140,19 @@ const Categories = () => {
         <div>
             <div className="title-h1">
                 <h1>Categorias</h1>
-                <button className="button right-h1" onClick={handleOpenModal} >Nueva Categoría</button>
+                <button 
+                    className="button right-h1" 
+                    onClick={handleOpenModal}>
+                    Nueva Categoría
+                </button>
             </div>
             <div className="card no-margin">
                 {isLoading && <Loader asOverlay />}
                 <Scrollbars
                     style={{ height: 650}}
-                    renderTrackHorizontal={props => <div {...props} style={{display: 'none'}} />}
+                    renderTrackHorizontal={props => 
+                        <div {...props} style={{display: 'none'}} />
+                    }
                     >
                     <div className="padding-container" style={{padding: '20px'}}>
                         <div className="columns is-multiline">
@@ -83,21 +161,52 @@ const Categories = () => {
                     </div>
                 </Scrollbars>
                 <Modal
+                    ariaHideApp={false}
                     isOpen={openModal}
                     style={customStyles}
                     onRequestClose={handleCloseModal}
                     overlayClassName="Overlay">
-                    <h1>Nueva Categoría</h1>
+                    <h1>{isEditMode 
+                        ? 'Editar Categoría' 
+                        : 'Nueva Categoría'}</h1>
                     <form className="form-modal">
-                        <label>Título</label>
-                        <input type="text" />
-                        <label>Descripción</label>
-                        <textarea name="" id="" cols="30" rows="10"></textarea>
-                        <label>Color</label>
+                        <Input 
+                            id="title"
+                            value={isEditMode ? categorySelected.title : ''}
+                            element="text"
+                            label="Nombre"
+                            validators={[]}
+                            onInput={inputHandler}
+                        />
+                        <Input 
+                            id="description"
+                            value={isEditMode ? categorySelected.description : ''}
+                            element="textarea"
+                            label="Descripción"
+                            validators={[]}
+                            onInput={inputHandler}
+                        />
+                        <Input 
+                            id="color"
+                            value={isEditMode ? categorySelected.color : ''}
+                            element="text"
+                            label="Color (Hexadecimal)"
+                            validators={[]}
+                            onInput={inputHandler}
+                        />
                         <div className="columns">
                             <div className="column buttons">
-                                <button onClick={handleCloseModal} type="button" className="button cancel">Cancelar</button>
-                                <button className="button submit">Guardar</button>
+                                <button
+                                    onClick={handleCloseModal}
+                                    type="button"
+                                    className="button cancel">
+                                    Cancelar
+                                </button>
+                                <button
+                                    onClick={isEditMode ? updateCategory : submitCategory}
+                                    className="button submit">
+                                    Guardar
+                                </button>
                             </div>
                         </div>
                     </form>

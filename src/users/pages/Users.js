@@ -20,7 +20,7 @@ const Users = () => {
                 headers: {
                     Authorization: `Bearer ${auth.token}`
                 },
-                baseURL: 'https://api.wumi.app/api/v1/users/',
+                baseURL: 'https://api.wumi.app/api/v1/users/?limit=100',
                 method: 'GET',
             })
 

@@ -112,7 +112,7 @@ const Category = props => {
     },
     {
         name: 'Tipo',
-        selector: row => row.type_content.title,
+        selector: row => row.category.type_content.title,
         sortable: true,
     },
     {

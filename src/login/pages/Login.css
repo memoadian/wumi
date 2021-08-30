@@ -24,6 +24,6 @@
   left: 10px;
   top: 10px;
 }
-input {
+.icon-wrapper input {
   padding-left: 35px !important;
 }
