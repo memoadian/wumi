@@ -8,7 +8,8 @@ import {
 import Sidebar from 'shared/components/Sidebar'
 import ContentBody from './ContentBody'
 
-import Categories from '../categories/pages/Categories'
+import Caps from '../categories/pages/Caps'
+import Medit from '../categories/pages/Medit'
 import Category from '../categories/pages/Category'
 import NewContentSingle from '../categories/pages/NewContentSingle'
 import NewContentChapter from '../categories/pages/NewContentChapter'
@@ -68,7 +69,8 @@ const Main = () => {
                         <Route exact path="/panel" component={Dashboard} />
                         <Route exact path="/users" component={Users} />
                         <Route exact path="/home" component={Home} />
-                        <Route exact path="/categories" component={Categories} />
+                        <Route exact path="/capsulas" component={Caps} />
+                        <Route exact path="/meditacion" component={Medit} />
                         <Route exact path="/notifications" component={Notifications} />
                         <Route exact path="/profile" component={Profile} />
                         <Route exact path="/category/:id" component={Category} />

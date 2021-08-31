@@ -25,7 +25,10 @@ const Sidebar = () => {
                     <NavLink to="/home">Home</NavLink>
                 </li>
                 <li>
-                    <NavLink to="/categories">Categorias</NavLink>
+                    <NavLink to="/capsulas">Cats Capsula</NavLink>
+                </li>
+                <li>
+                    <NavLink to="/meditacion">Cats Meditación</NavLink>
                 </li>
                 <li>
                     <NavLink to="/notifications">Notificaciones</NavLink>

@@ -10,7 +10,6 @@ import Input from 'shared/components/FormElements/Input'
 import Loader from 'shared/UIElements/Loader'
 import Modal from 'react-modal'
 import axios from 'axios'
-import {NotificationContainer, NotificationManager} from 'react-notifications'
 
 import 'react-notifications/lib/notifications.css'
 import AudioUpload from 'shared/components/FormElements/AudioUpload'
@@ -250,7 +249,7 @@ const EditContentChapter = props => {
                                 id="type_content_id"
                                 label="Tipo de contenido"
                                 element="select"
-                                value={data.type_content.id}
+                                value={data.category.type_content.id}
                                 validators={[]}
                                 onInput={inputHandler}>
                                     <option value="">Seleccionar</option>
@@ -338,7 +337,7 @@ const EditContentChapter = props => {
                                                 label="Tipo de contenido"
                                                 element="select"
                                                 validators={[]}
-                                                value={data.type_content.id}
+                                                value={data.category.type_content.id}
                                                 onInput={inputHandler}>
                                                     <option value="">Seleccionar</option>
                                                     { contentTypes && 

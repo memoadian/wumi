@@ -45,8 +45,8 @@ const AudioUpload = props => {
     : 'https://api.wumi.app/api/v1/presigned/content/upload/'
 
     const data = (props.isChapter)
-    ? JSON.stringify({extension: 'mp3', chapter_id: props.contentId})
-    : JSON.stringify({extension: 'mp3', content_id: props.contentId})
+    ? JSON.stringify({extension: 'mp3', chapter_id: 10})
+    : JSON.stringify({extension: 'mp3', content_id: 10})
 
     const submitPresigned = async e => {
         e.preventDefault()
