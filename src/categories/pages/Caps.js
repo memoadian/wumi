@@ -16,6 +16,7 @@ const Caps = () => {
     const [categories, setCategories] = useState([])
     const [isEditMode, setIsEditMode] = useState(false)
     const [categorySelected, setCategorySelected] = useState(null)
+    const [color, setColor] = useState(null)
     const [formState, inputHandler] = useForm({
         title: {
             value: '',
@@ -64,8 +65,7 @@ const Caps = () => {
     }
 
     const handleCloseModal = () => {
-        if (isEditMode)
-            setIsEditMode(false)
+        setIsEditMode(false)
         setOpenModal(false)
     }
 
@@ -161,8 +161,8 @@ const Caps = () => {
             className="column is-one-quarter-desktop is-half-tablet">
             <CardCategory 
                 id={id} 
-                title={title} 
-                background={color} 
+                title={title}
+                background={color}
                 description={description}
                 onClickEdit={handleOpenModal}
             />
@@ -203,36 +203,59 @@ const Caps = () => {
                         ? 'Editar Categoría' 
                         : 'Nueva Categoría'}</h1>
                     <form className="form-modal">
-                        <Input 
-                            id="title"
-                            value={isEditMode ? categorySelected.title : ''}
-                            element="text"
-                            label="Nombre"
-                            validators={[]}
-                            onInput={inputHandler}
-                        />
-                        <Input 
-                            id="description"
-                            value={isEditMode ? categorySelected.description : ''}
-                            element="textarea"
-                            label="Descripción"
-                            validators={[]}
-                            onInput={inputHandler}
-                        />
-                        <Input 
-                            id="color"
-                            value={isEditMode ? categorySelected.color : ''}
-                            element="text"
-                            label="Color (Hexadecimal)"
-                            validators={[]}
-                            onInput={inputHandler}
-                        />
-                        <ImageUpload 
-                            center
-                            id="image"
-                            onInput={inputHandler}
-                            errorText="Selecciona una imagen"
-                        />
+                        <div className="columns">
+                            <div className="column">
+                                <Input 
+                                    id="title"
+                                    value={isEditMode ? categorySelected.title : ''}
+                                    element="text"
+                                    label="Nombre"
+                                    validators={[]}
+                                    onInput={inputHandler}
+                                />
+                                <Input 
+                                    id="description"
+                                    value={isEditMode ? categorySelected.description : ''}
+                                    element="textarea"
+                                    label="Descripción"
+                                    validators={[]}
+                                    onInput={inputHandler}
+                                />
+                                <div className="columns">
+                                    <div className="column">
+                                        <Input 
+                                            id="color"
+                                            type="text"
+                                            value={isEditMode ? categorySelected.color : color}
+                                            element="text"
+                                            label="Color (Hexadecimal)"
+                                            validators={[]}
+                                            onInput={inputHandler}
+                                        />
+                                    </div>
+                                    <div className="column">
+                                        <Input 
+                                            id="color"
+                                            type="color"
+                                            value={isEditMode ? categorySelected.color : color}
+                                            onChange={e => setColor(e.target.value)}
+                                            element="text"
+                                            label="Color (Hexadecimal)"
+                                            validators={[]}
+                                            onInput={inputHandler}
+                                        />
+                                    </div>
+                                </div>
+                            </div>
+                            <div className="column">
+                                <ImageUpload 
+                                    center
+                                    id="image"
+                                    onInput={inputHandler}
+                                    errorText="Selecciona una imagen"
+                                />
+                            </div>
+                        </div>
                         <div className="columns">
                             <div className="column buttons">
                                 <button

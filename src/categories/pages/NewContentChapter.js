@@ -8,7 +8,6 @@ import getLevels from 'shared/helpers/getLevels'
 import ImageUpload from 'shared/components/FormElements/ImageUpload'
 import Input from 'shared/components/FormElements/Input'
 import Loader from 'shared/UIElements/Loader'
-import Modal from 'react-modal'
 import axios from 'axios'
 
 const NewContentChapter = props => {
@@ -19,12 +18,7 @@ const NewContentChapter = props => {
     const [contentTypes, setContentTypes] = useState([])
     const [status, setStatus] = useState([])
     const [levels, setLevels] = useState([])
-    const [openModal, setOpenModal] = useState(false)
     const [formState, inputHandler] = useForm({
-        type_content_id: {
-            value: '',
-            isValid: false
-        },
         title: {
             value: '',
             isValid: false
@@ -37,12 +31,12 @@ const NewContentChapter = props => {
             value: '',
             isValid: false
         },
-        image: {
-            value: null,
-            isValid: false
-        },
         cstatus_id: {
             value: '',
+            isValid: false
+        },
+        image: {
+            value: null,
             isValid: false
         }
     }, false)
@@ -65,14 +59,6 @@ const NewContentChapter = props => {
             })
     }, [auth])
 
-    const handleOpenModal = () => {
-        setOpenModal(true)
-    }
-
-    const handleCloseModal = () => {
-        setOpenModal(false)
-    }
-
     const submitHandler = async e => {
         e.preventDefault()
 
@@ -83,7 +69,6 @@ const NewContentChapter = props => {
         formData.append('description', formState.inputs.description.value)
         formData.append('order', 1)
         formData.append('category_id', props.match.params.cat_id)
-        formData.append('type_content_id', formState.inputs.type_content_id.value)
         formData.append('level_id', formState.inputs.level_id.value)
         formData.append('image', formState.inputs.image.value)
         formData.append('cstatus_id', formState.inputs.cstatus_id.value)
@@ -126,19 +111,6 @@ const NewContentChapter = props => {
                 <form onSubmit={submitHandler}>
                     <div className="columns">
                         <div className="column">
-                            <Input
-                                id="type_content_id"
-                                label="Tipo de contenido"
-                                element="select"
-                                validators={[]}
-                                onInput={inputHandler}>
-                                    <option value="">Seleccionar</option>
-                                    { contentTypes && 
-                                        contentTypes.map((ct) => {
-                                            return <option key={ct.id} value={ct.id}>{ct.title}</option>
-                                        })
-                                    }
-                            </Input>
                             <Input
                                 id="title"
                                 label="Título"

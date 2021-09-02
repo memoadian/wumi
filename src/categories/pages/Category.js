@@ -123,7 +123,7 @@ const Category = props => {
     {
         name: '',
         button: true,
-        cell: row => <NavLink to={(row.content_asset != null) ? `/edit-single/${row.id}` : `/edit-chapter/${row.id}`}>Edit</NavLink>,
+        cell: row => <NavLink to={(row.is_individual) ? `/edit-single/${row.id}` : `/edit-chapter/${row.id}`}>Edit</NavLink>,
     }]
 
     return (

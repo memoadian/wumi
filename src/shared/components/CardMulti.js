@@ -23,10 +23,15 @@ const CardMulti = () => {
 
             const data = response.data.results
             const total = data.reduce((sum, {total}) => sum + total, 0)
-            setMen(Math.round((data[0].total / total)*100))
-            setWomen(Math.round((data[1].total / total)*100))
-            setOmit(Math.round((data[2].total / total)*100))
-            setOther(Math.round((data[3].total / total)*100))
+            const men = Math.round((data[0].total / total)*100)
+            const women = Math.round((data[1].total / total)*100)
+            const omit = Math.round((data[2].total / total)*100)
+            const other = Math.round((data[3].total / total)*100)
+
+            setMen(isNaN(men) ? 0 : men)
+            setWomen(isNaN(women) ? 0 : women)
+            setOmit(isNaN(omit) ? 0 : omit)
+            setOther(isNaN(other) ? 0 : other)
         }
         fetchByGender()        
     }, [auth])

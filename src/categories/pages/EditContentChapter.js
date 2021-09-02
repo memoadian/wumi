@@ -13,18 +13,19 @@ import axios from 'axios'
 
 import 'react-notifications/lib/notifications.css'
 import AudioUpload from 'shared/components/FormElements/AudioUpload'
+import CardChapter from 'categories/components/CardChapter'
 
 const EditContentChapter = props => {
     const history = useHistory()
     const auth = useContext(AuthContext)
     const [isLoading, setIsLoading] = useState(false)
     const [error, setError] = useState()
-    const [contentTypes, setContentTypes] = useState([])
     const [status, setStatus] = useState([])
     const [levels, setLevels] = useState([])
     const [openModal, setOpenModal] = useState(false)
     const [data, setData] = useState(null)
     const [chapter, setChapter] = useState(null)
+    const [chapterSelected, setChapterSelected] = useState(null)
     const [isEdit, setIsEdit] = useState(false)
     const [ID, setID] = useState(0)
     const [formState, inputHandler] = useForm({
@@ -80,11 +81,6 @@ const EditContentChapter = props => {
 
     useEffect(() => {
         if (!auth.token) { return }
-        getContentTypes(auth.token)
-            .then(ct => {
-                setContentTypes(ct)
-            })
-
         getStatus(auth.token)
             .then(status => {
                 setStatus(status)
@@ -126,11 +122,19 @@ const EditContentChapter = props => {
         getChapters()
     }, [auth])
 
-    const handleOpenModal = () => {
+    const handleOpenModal = (data) => {
+        if (data.editMode) {
+            setIsEdit(true)
+        }
+        if (data.id !== null) {
+            setChapterSelected(chapter.find(ch => ch.id === data.id))
+            setID(data.id)
+        }
         setOpenModal(true)
     }
 
     const handleCloseModal = () => {
+        setIsEdit(false)
         setOpenModal(false)
     }
 
@@ -159,10 +163,8 @@ const EditContentChapter = props => {
         formData.append('title', formState.inputs.title.value)
         formData.append('description', formState.inputs.description.value)
         formData.append('order', 1)
-        formData.append('category_id', props.match.params.cat_id)
-        formData.append('type_content_id', formState.inputs.type_content_id.value)
         formData.append('level_id', formState.inputs.level_id.value)
-        formData.append('image', formState.inputs.image.value)
+        if (formState.inputs.image.value != null) {formData.append('image', formState.inputs.image.value)}
         formData.append('cstatus_id', formState.inputs.cstatus_id.value)
 
         try {
@@ -170,8 +172,8 @@ const EditContentChapter = props => {
                 headers: {
                     Authorization: `Bearer ${auth.token}`
                 },
-                baseURL: 'https://api.wumi.app/api/v1/contents/',
-                method: 'POST',
+                baseURL: `https://api.wumi.app/api/v1/contents/${props.match.params.id}/`,
+                method: 'PATCH',
                 mode: 'no-cors',
                 data: formData
             })
@@ -199,11 +201,51 @@ const EditContentChapter = props => {
         formData.append('title', formState.inputs.cap_title.value)
         formData.append('description', formState.inputs.cap_description.value)
         formData.append('order', 1)
-        formData.append('content_id', props.match.params.id)
-        formData.append('type_content_id', formState.inputs.cap_type_content_id.value)
         formData.append('level_id', formState.inputs.cap_level_id.value)
-        formData.append('image', formState.inputs.cap_image.value)
         formData.append('cstatus_id', formState.inputs.cap_cstatus_id.value)
+        formData.append('content_id', props.match.params.id)
+        formData.append('image', formState.inputs.cap_image.value)
+
+        try {
+            const resp = await axios({
+                headers: {
+                    Authorization: `Bearer ${auth.token}`
+                },
+                baseURL: 'https://api.wumi.app/api/v1/chapters/',
+                method: 'POST',
+                mode: 'no-cors',
+                data: formData
+            })
+
+            setIsLoading(false)
+                
+            if (resp.status === 201) {
+                console.log(resp.data)
+                setIsEdit(true)
+                setID(resp.data.id)
+            } else {
+                //setError(resp)
+                console.log(resp.status)
+            }
+        } catch (err) {
+            setIsLoading(false)
+            setError(err.errors || 'Something went wrong, please try again.')
+        }
+    }
+
+    const updateChapter = async e => {
+        e.preventDefault()
+
+        setIsLoading(true)
+
+        const formData = new FormData()
+        formData.append('title', formState.inputs.cap_title.value)
+        formData.append('description', formState.inputs.cap_description.value)
+        formData.append('order', 1)
+        formData.append('level_id', formState.inputs.cap_level_id.value)
+        formData.append('cstatus_id', formState.inputs.cap_cstatus_id.value)
+        formData.append('content_id', props.match.params.id)
+        if (formState.inputs.cap_image.value != null) {formData.append('image', formState.inputs.cap_image.value)}
 
         try {
             const resp = await axios({
@@ -245,20 +287,6 @@ const EditContentChapter = props => {
                 <form onSubmit={submitHandler}>
                     <div className="columns">
                         <div className="column">
-                            <Input
-                                id="type_content_id"
-                                label="Tipo de contenido"
-                                element="select"
-                                value={data.category.type_content.id}
-                                validators={[]}
-                                onInput={inputHandler}>
-                                    <option value="">Seleccionar</option>
-                                    { contentTypes && 
-                                        contentTypes.map((ct) => {
-                                            return <option key={ct.id} value={ct.id}>{ct.title}</option>
-                                        })
-                                    }
-                            </Input>
                             <Input
                                 id="title"
                                 label="Título"
@@ -319,38 +347,27 @@ const EditContentChapter = props => {
                                 onClick={handleOpenModal}>
                                 Agregar Capitulo
                             </button>
-                            {chapter && chapter.map((chapter) => <div className="chapters">
-                                    {chapter.title}
-                                </div>)}
+                            {chapter && chapter.map((chapter) => 
+                                <CardChapter
+                                    id={chapter.id}
+                                    title={chapter.title}
+                                    onClickEdit={handleOpenModal}
+                                />)}
                             <Modal
                                 ariaHideApp={false}
                                 isOpen={openModal}
                                 style={customStyles}
                                 onRequestClose={handleCloseModal}
                                 overlayClassName="Overlay">
-                                <h1>Nuevo Capítulo</h1>
+                                <h1>{isEdit ? 'Editar Capítulo' : 'Nuevo Capítulo'}</h1>
                                 <form className="form-modal">
                                     <div className="columns">
                                         <div className="column">
                                             <Input
-                                                id="cap_type_content_id"
-                                                label="Tipo de contenido"
-                                                element="select"
-                                                validators={[]}
-                                                value={data.category.type_content.id}
-                                                onInput={inputHandler}>
-                                                    <option value="">Seleccionar</option>
-                                                    { contentTypes && 
-                                                        contentTypes.map((ct) => {
-                                                            return <option key={ct.id} value={ct.id}>{ct.title}</option>
-                                                        })
-                                                    }
-                                            </Input>
-                                            <Input
                                                 id="cap_title"
+                                                value={(isEdit && chapterSelected != null) ? chapterSelected.title : data.title}
                                                 label="Título"
                                                 validators={[]}
-                                                value={data.title}
                                                 onInput={inputHandler}
                                             />
                                             <Input
@@ -358,7 +375,7 @@ const EditContentChapter = props => {
                                                 label="Description"
                                                 element="textarea"
                                                 validators={[]}
-                                                value={data.description}
+                                                value={(isEdit && chapterSelected != null) ? chapterSelected.description : data.description}
                                                 onInput={inputHandler}
                                             />
                                             <Input
@@ -379,12 +396,16 @@ const EditContentChapter = props => {
                                         <div className="column">
                                             {isEdit && <AudioUpload
                                                 id="cap_audio"
+                                                value={(chapterSelected != null && chapterSelected.chapter_asset != null) 
+                                                    ? chapterSelected.chapter_asset.asset
+                                                    : ''}
                                                 isChapter={true}
                                                 contentId={ID}
                                             />}
                                             <ImageUpload 
                                                 center
                                                 id="cap_image"
+                                                value={(isEdit && chapterSelected != null) ? chapterSelected.image : ''}
                                                 onInput={inputHandler}
                                                 errorText="Selecciona una imagen"
                                             />
@@ -407,7 +428,7 @@ const EditContentChapter = props => {
                                     <div className="columns">
                                         <div className="column" style={{textAlign: "right"}}>
                                             <button
-                                                onClick={submitChapter}
+                                                onClick={isEdit ? updateChapter : submitChapter}
                                                 style={{marginBottom: "0"}}
                                                 className="button" type="button">
                                                 Guardar

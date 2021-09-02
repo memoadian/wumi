@@ -1,14 +1,16 @@
 import { useState, useCallback, useContext, useEffect } from 'react'
 import { useForm } from 'shared/hooks/form-hook'
-import update from 'immutability-helper'
-import Modal from 'react-modal'
-import SortItem from 'shared/components/SortItem'
 import { DndProvider } from 'react-dnd'
 import { HTML5Backend } from 'react-dnd-html5-backend'
 import { AuthContext } from 'shared/context/auth-context'
+import update from 'immutability-helper'
+import Modal from 'react-modal'
+import SortItem from 'shared/components/SortItem'
 import DataTable from 'react-data-table-component'
 import axios from 'axios'
 import Input from 'shared/components/FormElements/Input'
+import movilback from 'movilback.png'
+import Scrollbars from 'react-custom-scrollbars-2'
 import './Home.css'
 
 const Home = () => {
@@ -17,9 +19,13 @@ const Home = () => {
     const [openModal, setOpenModal] = useState(false)
     const [categories, setCategories] = useState([])
     const [content, setContent] = useState([])
-    const [cards, setCards] = useState([])
+    const [cardsMedit, setCardsMedit] = useState([])
+    const [cardsCap, setCardsCap] = useState([])
+    const [isCap, setIsCap] = useState(false)
+    const [catSelected, setCatSelected] = useState(null)
+    const [phrase, setPhrase] = useState('')
     const [formState, inputHandler] = useForm({
-        type_content_id: {
+        phrase: {
             value: '',
             isValid: false
         },
@@ -27,21 +33,49 @@ const Home = () => {
 
     useEffect(() => {
         if (!auth.token) {return}
-        const getCategories = async () => {
+        const getPhrase = async () => {
             const response = await axios({
                 headers: {
                     Authorization: `Bearer ${auth.token}`
                 },
-                baseURL: `https://api.wumi.app/api/v1/catalog/categories/`,
+                baseURL: `https://api.wumi.app/api/v1/phrases/`,
                 method: 'GET',
             })
 
             if (response.status === 200) {
-                setCategories(response.data.results)
+                setPhrase(response.data.results[0].title)
             }
         }
-        getCategories()
+        getPhrase()
     }, [auth])
+
+    const getCategoriesMedit = async () => {
+        const response = await axios({
+            headers: {
+                Authorization: `Bearer ${auth.token}`
+            },
+            baseURL: `https://api.wumi.app/api/v1/catalog/categories/?type_content=1`,
+            method: 'GET',
+        })
+
+        if (response.status === 200) {
+            setCategories(response.data.results)
+        }
+    }
+
+    const getCategoriesCap = async () => {
+        const response = await axios({
+            headers: {
+                Authorization: `Bearer ${auth.token}`
+            },
+            baseURL: `https://api.wumi.app/api/v1/catalog/categories/?type_content=2`,
+            method: 'GET',
+        })
+
+        if (response.status === 200) {
+            setCategories(response.data.results)
+        }
+    }
 
     const getCategoryContent = async e => {
         setIsLoading(true)
@@ -54,21 +88,25 @@ const Home = () => {
         })
 
         setContent(response.data.results)
+        setCatSelected(e.target.value)
         setIsLoading(false)
     }
 
-    const handleOpenModal = () => {
+    const handleOpenMeditModal = () => {
+        getCategoriesMedit()
+        setIsCap(false)
+        setOpenModal(true)
+    }
+
+    const handleOpenCapModal = () => {
+        getCategoriesCap()
+        setIsCap(true)
         setOpenModal(true)
     }
 
     const handleCloseModal = () => {
         setOpenModal(false)
-    }
-
-    const onRowClicked = (row, event) => {
-        if (cards.length < 5) {
-            setCards([...cards, row])
-        }
+        setContent([])
     }
 
     const customStyles = {
@@ -87,22 +125,66 @@ const Home = () => {
         },
     }
 
-    const moveCard = useCallback((dragIndex, hoverIndex) => {
-        const dragCard = cards[dragIndex]
-        setCards(update(cards, {
+    const moveCardMedit = useCallback((dragIndex, hoverIndex) => {
+        const dragCard = cardsMedit[dragIndex]
+        setCardsMedit(update(cardsMedit, {
             $splice: [
                 [dragIndex, 1],
                 [hoverIndex, 0, dragCard],
             ],
         }))
-    }, [cards])
+    }, [cardsMedit])
 
-    const renderItems = (card, index) => {
+    const renderItemsMedit = (card, index) => {
         return (
-            <SortItem key={card.id} index={index} id={card.id} moveCard={moveCard}>
+            <SortItem 
+                key={card.id} 
+                index={index} 
+                id={card.id} 
+                moveCard={moveCardMedit}
+                onClickRemove={removeMedit}>
                 {card.title}
             </SortItem>
         )
+    }
+
+    const moveCardCap = useCallback((dragIndex, hoverIndex) => {
+        const dragCard = cardsCap[dragIndex]
+        setCardsCap(update(cardsCap, {
+            $splice: [
+                [dragIndex, 1],
+                [hoverIndex, 0, dragCard],
+            ],
+        }))
+    }, [cardsCap])
+
+    const renderItemsCap = (card, index) => {
+        return (
+            <SortItem 
+                key={card.id} 
+                index={index} 
+                id={card.id} 
+                moveCard={moveCardCap}
+                onClickRemove={removeCap}>
+                {card.title}
+            </SortItem>
+        )
+    }
+
+    const saveSelected = () => {
+        if (catSelected != null) {
+            if (isCap) {
+                if (cardsCap.filter(card => card.id == catSelected).length == 0) {
+                    setCardsCap([...cardsCap, categories.find(cat => cat.id == catSelected)])
+                }
+            } else {
+                if (cardsMedit.filter(card => card.id == catSelected).length == 0) {
+                    setCardsMedit([...cardsMedit, categories.find(cat => cat.id == catSelected)])
+                }
+            }
+        }
+
+        handleCloseModal()
     }
 
     const columns = [{
@@ -128,21 +210,33 @@ const Home = () => {
         sortable: true,
     },
     {
-        name: 'Tipo',
-        selector: row => row.type_content.title,
-        sortable: true,
-    },
-    {
         name: 'Status',
         selector: row => row.cstatus.title,
         sortable: true,
     }]
 
+    const CardMeditRender = () => cardsMedit.map(item =>
+        <div key={item.id} style={{backgroundColor: item.color}}>{item.title}</div>
+    )
+
+    const CardCapsRender = () => cardsCap.map(item =>
+        <div key={item.id} style={{backgroundColor: item.color}}>{item.title}</div>
+    )
+
+    const removeCap = (data) => {
+        setCardsCap(cardsCap.filter(item => item.id !== data.id))
+    }
+
+    const removeMedit = (data) => {
+        console.log(data.id)
+        setCardsMedit(cardsMedit.filter(item => item.id !== data.id))
+    }
+
     return (
         <div>
             <div className="title-h1">
                 <h1>Home</h1>
-                <button className="button right-h1" onClick={handleOpenModal} >
+                <button className="button right-h1" >
                     Publicar
                 </button>
             </div>
@@ -156,36 +250,51 @@ const Home = () => {
                                 fontSize: '14px',
                                 color: '#003249'
                             }}>
-                            Reference site about Lorem Ipsum, giving information on its origins
+                            {phrase}
                             </p>
                             <form action="" className="form-modal">
                                 <Input
                                     id="phrase"
                                     label="Frase"
+                                    validators={[]}
                                     onInput={inputHandler}
                                 />
                             </form>
 
                             <button 
                                 type="button"
-                                className="button full"
-                                onClick={handleOpenModal}>
-                                Agregar Categoría
+                                className="button full button-home"
+                                onClick={handleOpenMeditModal}>
+                                Agregar Meditación
                             </button>
 
                             <DndProvider backend={HTML5Backend}>
-                                {cards.map((card, i) => renderItems(card, i))}
+                                {cardsMedit.map((card, i) => renderItemsMedit(card, i))}
                             </DndProvider>
 
                             <button 
                                 type="button"
-                                className="button full"
-                                onClick={handleOpenModal}>
-                                Agregar Contenido
+                                className="button full button-home"
+                                onClick={handleOpenCapModal}>
+                                Agregar Cápsula
                             </button>
+
+                            <DndProvider backend={HTML5Backend}>
+                                {cardsCap.map((card, i) => renderItemsCap(card, i))}
+                            </DndProvider>
                         </div>
                         <div className="column">
-                            <div className="back-blue"></div>
+                            <div className="back-blue">
+                                <div className="container-device">
+                                    <img src={movilback} alt="" />
+                                    <div className="horizontal-scroll-wrapper">
+                                        <CardMeditRender/>
+                                    </div>
+                                    <div className="listCapsula">
+                                        <CardCapsRender/>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -217,8 +326,17 @@ const Home = () => {
                 <DataTable
                     columns={columns}
                     data={content}
-                    onRowClicked={onRowClicked}
                 />
+                <div className="columns">
+                    <div className="column buttons">
+                        <button 
+                            onClick={saveSelected}
+                            className="button submit"
+                            style={{float: 'right'}}>
+                                Guardar
+                        </button>
+                    </div>
+                </div>
             </Modal>
         </div>
     )

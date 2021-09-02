@@ -15,6 +15,19 @@ textarea {
   padding: 10px;
   min-height: 100px;
 }
+input[type="color"] {
+  background: none;
+  border: 3px solid #fff;
+  box-shadow: 0px 0px 0px 1px #ccc;
+  border-radius: 0px;
+  padding: 0 !important;
+}
+input[type="color"]::-webkit-color-swatch-wrapper {
+  padding: 0;
+}
+input[type="color"]::-webkit-color-swatch {
+  border: none;
+}
 label {
   color: #003249;
   font-size: 13px;
@@ -25,4 +38,10 @@ label {
   background: #f6f6f6;
   padding: 10px;
   margin-bottom: 10px;
+}
+.color-container input {
+  padding: 5px !important;
+  margin: 0px !important;
+  height: auto !important;
+  border-radius: 0;
 }

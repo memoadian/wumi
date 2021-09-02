@@ -21,10 +21,6 @@ const NewContentSingle = props => {
     const [status, setStatus] = useState([])
     const [levels, setLevels] = useState([])
     const [formState, inputHandler] = useForm({
-        type_content_id: {
-            value: '',
-            isValid: false
-        },
         title: {
             value: '',
             isValid: false
@@ -73,9 +69,9 @@ const NewContentSingle = props => {
         const formData = new FormData()
         formData.append('title', formState.inputs.title.value)
         formData.append('description', formState.inputs.description.value)
+        formData.append('is_individual', 1)
         formData.append('order', 1)
         formData.append('category_id', props.match.params.cat_id)
-        formData.append('type_content_id', formState.inputs.type_content_id.value)
         formData.append('level_id', formState.inputs.level_id.value)
         formData.append('image', formState.inputs.image.value)
         formData.append('cstatus_id', formState.inputs.cstatus_id.value)
@@ -117,19 +113,6 @@ const NewContentSingle = props => {
                 <form onSubmit={submitHandler}>
                     <div className="columns">
                         <div className="column">
-                            <Input
-                                id="type_content_id"
-                                label="Tipo de contenido"
-                                element="select"
-                                validators={[]}
-                                onInput={inputHandler}>
-                                    <option value="">Seleccionar</option>
-                                    { contentTypes && 
-                                        contentTypes.map((ct) => {
-                                            return <option key={ct.id} value={ct.id}>{ct.title}</option>
-                                        })
-                                    }
-                            </Input>
                             <Input
                                 id="title"
                                 label="Título"

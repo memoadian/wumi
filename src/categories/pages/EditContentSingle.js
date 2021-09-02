@@ -23,10 +23,6 @@ const EditContentSingle = props => {
     const [levels, setLevels] = useState([])
     const [data, setData] = useState(null)
     const [formState, inputHandler] = useForm({
-        type_content_id: {
-            value: '',
-            isValid: false
-        },
         title: {
             value: '',
             isValid: false
@@ -91,10 +87,8 @@ const EditContentSingle = props => {
         formData.append('title', formState.inputs.title.value)
         formData.append('description', formState.inputs.description.value)
         formData.append('order', 1)
-        formData.append('category_id', props.match.params.cat_id)
-        formData.append('type_content_id', formState.inputs.type_content_id.value)
         formData.append('level_id', formState.inputs.level_id.value)
-        formData.append('image', formState.inputs.image.value)
+        if (formState.inputs.image.value != null) {formData.append('image', formState.inputs.image.value)}
         formData.append('cstatus_id', formState.inputs.cstatus_id.value)
 
         try {
@@ -102,8 +96,8 @@ const EditContentSingle = props => {
                 headers: {
                     Authorization: `Bearer ${auth.token}`
                 },
-                baseURL: 'https://api.wumi.app/api/v1/contents/',
-                method: 'POST',
+                baseURL: `https://api.wumi.app/api/v1/contents/${props.match.params.id}/`,
+                method: 'PATCH',
                 mode: 'no-cors',
                 data: formData
             })
@@ -136,24 +130,6 @@ const EditContentSingle = props => {
                 <form onSubmit={submitHandler}>
                     <div className="columns">
                         <div className="column">
-                            <Input
-                                id="type_content_id"
-                                label="Tipo de contenido"
-                                element="select"
-                                value={data.type_content.id}
-                                validators={[]}
-                                onInput={inputHandler}>
-                                    <option value="">Seleccionar</option>
-                                    { contentTypes && 
-                                        contentTypes.map((ct) => 
-                                            <option
-                                                key={ct.id}
-                                                value={ct.id}>
-                                                {ct.title}
-                                            </option>
-                                        )
-                                    }
-                            </Input>
                             <Input
                                 id="title"
                                 label="Título"
@@ -191,6 +167,7 @@ const EditContentSingle = props => {
                         <div className="column">
                             <AudioUpload
                                 id="audio"
+                                value={data.content_asset && data.content_asset.asset}
                                 isChapter={false}
                                 contentId={props.match.params.id}
                             />

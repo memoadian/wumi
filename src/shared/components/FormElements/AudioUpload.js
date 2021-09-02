@@ -45,8 +45,8 @@ const AudioUpload = props => {
     : 'https://api.wumi.app/api/v1/presigned/content/upload/'
 
     const data = (props.isChapter)
-    ? JSON.stringify({extension: 'mp3', chapter_id: 10})
-    : JSON.stringify({extension: 'mp3', content_id: 10})
+    ? JSON.stringify({extension: 'mp3', chapter_id: props.contentId})
+    : JSON.stringify({extension: 'mp3', content_id: props.contentId})
 
     const submitPresigned = async e => {
         e.preventDefault()
@@ -92,7 +92,7 @@ const AudioUpload = props => {
         formData.append('AWSAccessKeyId', form.AWSAccessKeyId)
         formData.append('policy', form.policy)
         formData.append('signature', form.signature)
-        formData.append('file', formState.inputs.audio.value)
+        formData.append('file', file)
 
         try {
             const resp = await axios({
@@ -117,6 +117,7 @@ const AudioUpload = props => {
 
     return (
         <div className="form-control">
+            {props.value && <a target="_blank" href={props.value}>Abrir audio</a>}
             {isLoading && <Loader asOverlay />}
             <input
                 id={props.id}
@@ -129,6 +130,7 @@ const AudioUpload = props => {
             <div className="audio-upload">
                 <div className="desc">
                     {file && file.name}
+                    {(!file && !props.value) && <span>Escoge una imagen</span>}
                     <button type="button" onClick={pickAudioHandler}>></button>
                 </div>
             </div>
