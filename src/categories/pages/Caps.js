@@ -36,21 +36,22 @@ const Caps = () => {
         },
     }, false)
 
+    const fetchCategories = async () => {
+        setIsLoading(true)
+        const response = await axios({
+            headers: {
+                Authorization: `Bearer ${auth.token}`
+            },
+            baseURL: 'https://api.wumi.app/api/v1/catalog/categories/?type_content=1',
+            method: 'GET',
+        })
+
+        setCategories(response.data.results)
+        setIsLoading(false)
+    }
+
     useEffect(() => {
         if (!auth.token) {return}
-        const fetchCategories = async () => {
-            setIsLoading(true)
-            const response = await axios({
-                headers: {
-                    Authorization: `Bearer ${auth.token}`
-                },
-                baseURL: 'https://api.wumi.app/api/v1/catalog/categories/?type_content=1',
-                method: 'GET',
-            })
-
-            setCategories(response.data.results)
-            setIsLoading(false)
-        }
         fetchCategories()
     }, [auth])
 
@@ -77,6 +78,7 @@ const Caps = () => {
         formData.append('description', formState.inputs.description.value)
         formData.append('color', formState.inputs.color.value)
         formData.append('type_content_id', 1)
+        formData.append('is_active', 1)
         formData.append('image', formState.inputs.image.value)
 
         try {
@@ -94,7 +96,8 @@ const Caps = () => {
             setIsLoading(false)
                 
             if (resp.status === 201) {
-                console.log(resp.data)
+                handleCloseModal()
+                fetchCategories()
             } else {
                 //setError(resp)
                 console.log(resp.status)
@@ -112,6 +115,7 @@ const Caps = () => {
         formData.append('title', formState.inputs.title.value)
         formData.append('description', formState.inputs.description.value)
         formData.append('color', formState.inputs.color.value)
+        formData.append('is_active', 1)
 
         try {
             setIsLoading(true)
@@ -128,7 +132,8 @@ const Caps = () => {
             setIsLoading(false)
                 
             if (resp.status === 200) {
-                console.log(resp.data)
+                handleCloseModal()
+                fetchCategories()
             } else {
                 //setError(resp)
                 console.log(resp.status)

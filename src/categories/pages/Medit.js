@@ -16,6 +16,7 @@ const Medit = () => {
     const [categories, setCategories] = useState([])
     const [isEditMode, setIsEditMode] = useState(false)
     const [categorySelected, setCategorySelected] = useState(null)
+    const [color, setColor] = useState(null)
     const [formState, inputHandler] = useForm({
         title: {
             value: '',
@@ -35,21 +36,22 @@ const Medit = () => {
         },
     }, false)
 
+    const fetchCategories = async () => {
+        setIsLoading(true)
+        const response = await axios({
+            headers: {
+                Authorization: `Bearer ${auth.token}`
+            },
+            baseURL: 'https://api.wumi.app/api/v1/catalog/categories/?type_content=2',
+            method: 'GET',
+        })
+
+        setCategories(response.data.results)
+        setIsLoading(false)
+    }
+
     useEffect(() => {
         if (!auth.token) {return}
-        const fetchCategories = async () => {
-            setIsLoading(true)
-            const response = await axios({
-                headers: {
-                    Authorization: `Bearer ${auth.token}`
-                },
-                baseURL: 'https://api.wumi.app/api/v1/catalog/categories/?type_content=2',
-                method: 'GET',
-            })
-
-            setCategories(response.data.results)
-            setIsLoading(false)
-        }
         fetchCategories()
     }, [auth])
 
@@ -77,6 +79,7 @@ const Medit = () => {
         formData.append('description', formState.inputs.description.value)
         formData.append('color', formState.inputs.color.value)
         formData.append('type_content_id', 2)
+        formData.append('is_active', 1)
         formData.append('image', formState.inputs.image.value)
 
         try {
@@ -94,7 +97,8 @@ const Medit = () => {
             setIsLoading(false)
                 
             if (resp.status === 201) {
-                console.log(resp.data)
+                handleCloseModal()
+                fetchCategories()
             } else {
                 //setError(resp)
                 console.log(resp.status)
@@ -112,6 +116,7 @@ const Medit = () => {
         formData.append('title', formState.inputs.title.value)
         formData.append('description', formState.inputs.description.value)
         formData.append('color', formState.inputs.color.value)
+        formData.append('is_active', 1)
 
         try {
             setIsLoading(true)
@@ -128,7 +133,8 @@ const Medit = () => {
             setIsLoading(false)
                 
             if (resp.status === 200) {
-                console.log(resp.data)
+                handleCloseModal()
+                fetchCategories()
             } else {
                 //setError(resp)
                 console.log(resp.status)
@@ -203,36 +209,59 @@ const Medit = () => {
                         ? 'Editar Categoría' 
                         : 'Nueva Categoría'}</h1>
                     <form className="form-modal">
-                        <Input 
-                            id="title"
-                            value={isEditMode ? categorySelected.title : ''}
-                            element="text"
-                            label="Nombre"
-                            validators={[]}
-                            onInput={inputHandler}
-                        />
-                        <Input 
-                            id="description"
-                            value={isEditMode ? categorySelected.description : ''}
-                            element="textarea"
-                            label="Descripción"
-                            validators={[]}
-                            onInput={inputHandler}
-                        />
-                        <Input 
-                            id="color"
-                            value={isEditMode ? categorySelected.color : ''}
-                            element="text"
-                            label="Color (Hexadecimal)"
-                            validators={[]}
-                            onInput={inputHandler}
-                        />
-                        <ImageUpload 
-                            center
-                            id="image"
-                            onInput={inputHandler}
-                            errorText="Selecciona una imagen"
-                        />
+                        <div className="columns">
+                            <div className="column">
+                                <Input 
+                                    id="title"
+                                    value={isEditMode ? categorySelected.title : ''}
+                                    element="text"
+                                    label="Nombre"
+                                    validators={[]}
+                                    onInput={inputHandler}
+                                />
+                                <Input 
+                                    id="description"
+                                    value={isEditMode ? categorySelected.description : ''}
+                                    element="textarea"
+                                    label="Descripción"
+                                    validators={[]}
+                                    onInput={inputHandler}
+                                />
+                                <div className="columns">
+                                    <div className="column">
+                                        <Input 
+                                            id="color"
+                                            type="text"
+                                            value={isEditMode ? categorySelected.color : color}
+                                            element="text"
+                                            label="Color (Hexadecimal)"
+                                            validators={[]}
+                                            onInput={inputHandler}
+                                        />
+                                    </div>
+                                    <div className="column">
+                                        <Input 
+                                            id="color"
+                                            type="color"
+                                            value={isEditMode ? categorySelected.color : color}
+                                            onChange={e => setColor(e.target.value)}
+                                            element="text"
+                                            label="Color (Hexadecimal)"
+                                            validators={[]}
+                                            onInput={inputHandler}
+                                        />
+                                    </div>
+                                </div>
+                            </div>
+                            <div className="column">
+                                <ImageUpload 
+                                    center
+                                    id="image"
+                                    onInput={inputHandler}
+                                    errorText="Selecciona una imagen"
+                                />
+                            </div>
+                        </div>
                         <div className="columns">
                             <div className="column buttons">
                                 <button

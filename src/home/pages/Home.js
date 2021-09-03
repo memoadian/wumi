@@ -9,8 +9,8 @@ import SortItem from 'shared/components/SortItem'
 import DataTable from 'react-data-table-component'
 import axios from 'axios'
 import Input from 'shared/components/FormElements/Input'
+import Loader from 'shared/UIElements/Loader'
 import movilback from 'movilback.png'
-import Scrollbars from 'react-custom-scrollbars-2'
 import './Home.css'
 
 const Home = () => {
@@ -31,6 +31,97 @@ const Home = () => {
         },
     }, false)
 
+    const submitData = async () => {
+        try {
+            setIsLoading(true)
+            const resp = await axios({
+                headers: {
+                    Authorization: `Bearer ${auth.token}`,
+                    'Content-Type': 'application/json',
+                },
+                baseURL: `https://api.wumi.app/api/v1/phrases/1/`,
+                method: 'PATCH',
+                mode: 'no-cors',
+                data: JSON.stringify({
+                    title: formState.inputs.phrase.value
+                })
+            })
+
+            setIsLoading(false)
+
+            if (resp.status === 200) {
+                setPhrase(resp.data.title)
+            } else {
+                //setError(resp)
+                console.log(resp.status)
+            }
+        } catch (error) {
+            setIsLoading(false)
+        }
+
+        try {
+            setIsLoading(true)
+
+            const cardsIds = cardsMedit.map(cm => cm.id)
+            console.log(cardsMedit)
+            console.log(cardsIds)
+
+            const resp = await axios({
+                headers: {
+                    Authorization: `Bearer ${auth.token}`,
+                    'Content-Type': 'application/json',
+                },
+                baseURL: `https://api.wumi.app/api/v1/tags/categories/1/`,
+                method: 'PATCH',
+                mode: 'no-cors',
+                data: JSON.stringify({
+                    categories_id: cardsIds
+                })
+            })
+
+            setIsLoading(false)
+
+            if (resp.status === 200) {
+                //setPhrase(resp.data.title)
+            } else {
+                //setError(resp)
+                console.log(resp.status)
+            }
+        } catch (error) {
+            setIsLoading(false)
+        }
+
+        try {
+            setIsLoading(true)
+
+            const cardsIds = cardsCap.map(cc => cc.id)
+
+            const resp = await axios({
+                headers: {
+                    Authorization: `Bearer ${auth.token}`,
+                    'Content-Type': 'application/json',
+                },
+                baseURL: `https://api.wumi.app/api/v1/tags/categories/2/`,
+                method: 'PATCH',
+                mode: 'no-cors',
+                data: JSON.stringify({
+                    categories_id: cardsIds
+                })
+            })
+
+            setIsLoading(false)
+
+            if (resp.status === 200) {
+                //setPhrase(resp.data.title)
+            } else {
+                //setError(resp)
+                console.log(resp.status)
+            }
+        } catch (error) {
+            setIsLoading(false)
+        }
+    }
+
     useEffect(() => {
         if (!auth.token) {return}
         const getPhrase = async () => {
@@ -47,6 +138,22 @@ const Home = () => {
             }
         }
         getPhrase()
+
+        const getCategories = async ()  => {
+            const response = await axios({
+                headers: {
+                    Authorization: `Bearer ${auth.token}`
+                },
+                baseURL: `https://api.wumi.app/api/v1/tags/categories/`,
+                method: 'GET',
+            })
+
+            if (response.status === 200) {
+                setCardsMedit(response.data.results[0].categories)
+                setCardsCap(response.data.results[1].categories)
+            }
+        }
+        getCategories()
     }, [auth])
 
     const getCategoriesMedit = async () => {
@@ -54,7 +161,7 @@ const Home = () => {
             headers: {
                 Authorization: `Bearer ${auth.token}`
             },
-            baseURL: `https://api.wumi.app/api/v1/catalog/categories/?type_content=1`,
+            baseURL: `https://api.wumi.app/api/v1/catalog/categories/?type_content=2`,
             method: 'GET',
         })
 
@@ -68,7 +175,7 @@ const Home = () => {
             headers: {
                 Authorization: `Bearer ${auth.token}`
             },
-            baseURL: `https://api.wumi.app/api/v1/catalog/categories/?type_content=2`,
+            baseURL: `https://api.wumi.app/api/v1/catalog/categories/?type_content=1`,
             method: 'GET',
         })
 
@@ -176,15 +283,15 @@ const Home = () => {
             if (isCap) {
                 if (cardsCap.filter(card => card.id == catSelected).length == 0) {
                     setCardsCap([...cardsCap, categories.find(cat => cat.id == catSelected)])
+                    handleCloseModal()
                 }
             } else {
                 if (cardsMedit.filter(card => card.id == catSelected).length == 0) {
                     setCardsMedit([...cardsMedit, categories.find(cat => cat.id == catSelected)])
+                    handleCloseModal()
                 }
             }
         }
-
-        handleCloseModal()
     }
 
     const columns = [{
@@ -216,11 +323,11 @@ const Home = () => {
     }]
 
     const CardMeditRender = () => cardsMedit.map(item =>
-        <div key={item.id} style={{backgroundColor: item.color}}>{item.title}</div>
+        <div key={item.id} style={{backgroundImage: `url(${item.image})`}}>{item.title}</div>
     )
 
     const CardCapsRender = () => cardsCap.map(item =>
-        <div key={item.id} style={{backgroundColor: item.color}}>{item.title}</div>
+        <div key={item.id} style={{backgroundImage: `url(${item.image})`}}>{item.title}</div>
     )
 
     const removeCap = (data) => {
@@ -234,9 +341,10 @@ const Home = () => {
 
     return (
         <div>
+            {isLoading && <Loader asOverlay />}
             <div className="title-h1">
                 <h1>Home</h1>
-                <button className="button right-h1" >
+                <button className="button right-h1" onClick={submitData}>
                     Publicar
                 </button>
             </div>
@@ -253,12 +361,13 @@ const Home = () => {
                             {phrase}
                             </p>
                             <form action="" className="form-modal">
-                                <Input
+                                {phrase && <Input
                                     id="phrase"
                                     label="Frase"
+                                    value={phrase}
                                     validators={[]}
                                     onInput={inputHandler}
-                                />
+                                />}
                             </form>
 
                             <button 

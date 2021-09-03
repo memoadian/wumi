@@ -26,7 +26,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  z-index: 99999;
+  z-index: 999999999999;
 }
 
 @keyframes lds-dual-ring {
