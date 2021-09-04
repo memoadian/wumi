@@ -1,6 +1,8 @@
 import React, { useMemo } from 'react'
-import { useTable, useSortBy, useGlobalFilter } from 'react-table'
+import { useTable, useSortBy, useGlobalFilter, usePagination } from 'react-table'
 import GlobalFilter from './GlobalFilter'
+
+import './Table.css'
 
 const Table = props => {
     const dataHeaders = props.dataHeaders
@@ -12,7 +14,11 @@ const Table = props => {
         getTableProps,
         getTableBodyProps,
         headerGroups,
-        rows,
+        page,
+        nextPage,
+        previousPage,
+        canNextPage,
+        canPreviousPage,
         prepareRow,
         state,
         setGlobalFilter,
@@ -22,7 +28,8 @@ const Table = props => {
         data: dataBody
     },
     useGlobalFilter,
-    useSortBy)
+    useSortBy,
+    usePagination)
 
     const { globalFilter } = state
 
@@ -36,7 +43,7 @@ const Table = props => {
                         {head.headers.map((column) => (
                             <th {...column.getHeaderProps(column.getSortByToggleProps())}>
                                 {column.render('Header')}
-                                <span>
+                                <span className="sorted">
                                     {column.isSorted ? (column.isSortedDesc ? '<' : '>') : ''}
                                 </span>
                             </th>
@@ -46,7 +53,7 @@ const Table = props => {
                 </thead>
                 <tbody {...getTableBodyProps()}>
                     {
-                        rows.map((row) => {
+                        page.map((row) => {
                             prepareRow(row)
                             return (
                                 <tr {...row.getRowProps({
@@ -63,6 +70,10 @@ const Table = props => {
                     }
                 </tbody>
             </table>
+            <div style={{display: 'none'}}>
+                <button onClick={() => previousPage()}>Anterior</button>
+                <button onClick={() => nextPage()}>Siguiente</button>
+            </div>
         </div>
     )
 }

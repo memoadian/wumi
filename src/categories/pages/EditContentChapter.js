@@ -79,6 +79,34 @@ const EditContentChapter = props => {
         }
     }, false)
 
+    const getContent = async () => {
+        setIsLoading(true)
+        const response = await axios({
+            headers: {
+                Authorization: `Bearer ${auth.token}`
+            },
+            baseURL: `https://api.wumi.app/api/v1/contents/${props.match.params.id}/`,
+            method: 'GET',
+        })
+
+        setData(response.data)
+        setIsLoading(false)
+    }
+
+    const getChapters = async () => {
+        setIsLoading(true)
+        const response = await axios({
+            headers: {
+                Authorization: `Bearer ${auth.token}`
+            },
+            baseURL: `https://api.wumi.app/api/v1/chapters/?content=${props.match.params.id}`,
+            method: 'GET',
+        })
+
+        setChapter(response.data.results)
+        setIsLoading(false)
+    }
+
     useEffect(() => {
         if (!auth.token) { return }
         getStatus(auth.token)
@@ -91,34 +119,8 @@ const EditContentChapter = props => {
                 setLevels(levels)
             })
 
-        const getContent = async () => {
-            setIsLoading(true)
-            const response = await axios({
-                headers: {
-                    Authorization: `Bearer ${auth.token}`
-                },
-                baseURL: `https://api.wumi.app/api/v1/contents/${props.match.params.id}/`,
-                method: 'GET',
-            })
-
-            setData(response.data)
-            setIsLoading(false)
-        }
         getContent()
 
-        const getChapters = async () => {
-            setIsLoading(true)
-            const response = await axios({
-                headers: {
-                    Authorization: `Bearer ${auth.token}`
-                },
-                baseURL: `https://api.wumi.app/api/v1/chapters/?content=${props.match.params.id}`,
-                method: 'GET',
-            })
-
-            setChapter(response.data.results)
-            setIsLoading(false)
-        }
         getChapters()
     }, [auth])
 
@@ -220,7 +222,7 @@ const EditContentChapter = props => {
             setIsLoading(false)
                 
             if (resp.status === 201) {
-                console.log(resp.data)
+                getChapters()
                 setIsEdit(true)
                 setID(resp.data.id)
             } else {

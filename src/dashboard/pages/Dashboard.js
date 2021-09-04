@@ -56,13 +56,14 @@ const Dashboard = () => {
     ]
 
     const total = mostCategories.reduce((sum, {value}) => sum + value, 0)
+    console.log(total)
     const labels = mostCategories.map(m => 
         <li>
             <span className="circle"
                 style={{backgroundColor: m.color}}>
             </span> {m.title}
             <span className="num">
-                {Math.round((m.value/total)*100)}%
+                {isNaN(Math.round((m.value/total)*100)) ? 0 : Math.round((m.value/total)*100)}%
             </span>
         </li>
     )
