@@ -388,7 +388,7 @@ const Home = () => {
               <p
                 style={{
                   marginBottom: "30px",
-                  fontSize: "14px",
+                  fontSize: "24px",
                   color: "#003249",
                 }}
               >

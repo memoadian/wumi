@@ -237,7 +237,7 @@ const Medit = () => {
                   <div className="column">
                     <Input
                       id="color"
-                      label="Nivel"
+                      label="Color"
                       element="select"
                       validators={[]}
                       onInput={inputHandler}
