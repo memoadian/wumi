@@ -91,7 +91,6 @@ const NewContentSingle = (props) => {
     formData.append("order", 1);
     formData.append("category_id", props.match.params.cat_id);
     formData.append("level_id", formState.inputs.level_id.value);
-    formData.append("image", formState.inputs.image.value);
     formData.append("cstatus_id", formState.inputs.cstatus_id.value);
 
     try {

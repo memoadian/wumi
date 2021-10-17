@@ -169,9 +169,6 @@ const EditContentChapter = (props) => {
     formData.append("description", formState.inputs.description.value);
     formData.append("order", 1);
     formData.append("level_id", formState.inputs.level_id.value);
-    if (formState.inputs.image.value != null) {
-      formData.append("image", formState.inputs.image.value);
-    }
     formData.append("cstatus_id", formState.inputs.cstatus_id.value);
 
     try {
@@ -211,7 +208,6 @@ const EditContentChapter = (props) => {
     formData.append("level_id", formState.inputs.cap_level_id.value);
     formData.append("cstatus_id", formState.inputs.cap_cstatus_id.value);
     formData.append("content_id", props.match.params.id);
-    formData.append("image", formState.inputs.cap_image.value);
 
     try {
       const resp = await axios({
@@ -252,9 +248,6 @@ const EditContentChapter = (props) => {
     formData.append("level_id", formState.inputs.cap_level_id.value);
     formData.append("cstatus_id", formState.inputs.cap_cstatus_id.value);
     formData.append("content_id", props.match.params.id);
-    if (formState.inputs.cap_image.value != null) {
-      formData.append("image", formState.inputs.cap_image.value);
-    }
 
     try {
       const resp = await axios({

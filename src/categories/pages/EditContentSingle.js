@@ -88,9 +88,6 @@ const EditContentSingle = (props) => {
     formData.append("description", formState.inputs.description.value);
     formData.append("order", 1);
     formData.append("level_id", formState.inputs.level_id.value);
-    if (formState.inputs.image.value != null) {
-      formData.append("image", formState.inputs.image.value);
-    }
     formData.append("cstatus_id", formState.inputs.cstatus_id.value);
 
     try {
