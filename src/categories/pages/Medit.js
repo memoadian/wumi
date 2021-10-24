@@ -130,6 +130,9 @@ const Medit = () => {
     formData.append("description", formState.inputs.description.value);
     formData.append("color", formState.inputs.color.value);
     formData.append("is_active", 1);
+    if (formState.inputs.image.value != null) {
+      formData.append("image", formState.inputs.image.value);
+    }
 
     try {
       setIsLoading(true);
@@ -256,6 +259,13 @@ const Medit = () => {
                 </div>
               </div>
               <div className="column">
+                {isEditMode && (
+                  <img
+                    style={{ width: "50%", margin: "0 auto", display: "block" }}
+                    src={categorySelected.image}
+                    alt=""
+                  />
+                )}
                 <ImageUpload
                   center
                   id="image"

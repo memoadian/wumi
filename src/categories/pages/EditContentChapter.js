@@ -2,10 +2,8 @@ import React, { useState, useContext, useEffect } from "react";
 import { useForm } from "shared/hooks/form-hook";
 import { useHistory } from "react-router-dom";
 import { AuthContext } from "shared/context/auth-context";
-import getContentTypes from "shared/helpers/getContentTypes";
 import getStatus from "shared/helpers/getStatus";
 import getLevels from "shared/helpers/getLevels";
-import ImageUpload from "shared/components/FormElements/ImageUpload";
 import Input from "shared/components/FormElements/Input";
 import Loader from "shared/UIElements/Loader";
 import Modal from "react-modal";
@@ -141,6 +139,7 @@ const EditContentChapter = (props) => {
   const handleCloseModal = () => {
     setIsEdit(false);
     setOpenModal(false);
+    setError(null);
   };
 
   const customStyles = {
@@ -192,7 +191,7 @@ const EditContentChapter = (props) => {
       }
     } catch (err) {
       setIsLoading(false);
-      setError(err.errors || "Something went wrong, please try again.");
+      setError(err.response.data.errors);
     }
   };
 
@@ -226,13 +225,14 @@ const EditContentChapter = (props) => {
         getChapters();
         setIsEdit(true);
         setID(resp.data.id);
+        setChapterSelected(resp.data);
       } else {
         //setError(resp)
         console.log(resp.status);
       }
     } catch (err) {
       setIsLoading(false);
-      setError(err.errors || "Something went wrong, please try again.");
+      setError(err.response.data.errors);
     }
   };
 
@@ -254,25 +254,27 @@ const EditContentChapter = (props) => {
         headers: {
           Authorization: `Bearer ${auth.token}`,
         },
-        baseURL: "https://api.wumi.app/api/v1/chapters/",
-        method: "POST",
+        baseURL: `https://api.wumi.app/api/v1/chapters/${chapterSelected.id}/`,
+        method: "PATCH",
         mode: "no-cors",
         data: formData,
       });
 
       setIsLoading(false);
 
-      if (resp.status === 201) {
+      if (resp.status === 200) {
         console.log(resp.data);
-        setIsEdit(true);
         setID(resp.data.id);
+        setChapterSelected(resp.data);
+        getChapters();
       } else {
         //setError(resp)
         console.log(resp.status);
       }
     } catch (err) {
       setIsLoading(false);
-      setError(err.errors || "Something went wrong, please try again.");
+      console.log(err);
+      setError(err.response.data.errors);
     }
   };
 
@@ -286,7 +288,7 @@ const EditContentChapter = (props) => {
       </div>
       <div className="card no-margin">
         {isLoading && <Loader asOverlay />}
-        {error}
+        {error && <pre>{JSON.stringify(error)}</pre>}
         {data && (
           <form onSubmit={submitHandler}>
             <div className="columns">
@@ -377,6 +379,7 @@ const EditContentChapter = (props) => {
                   overlayClassName="Overlay"
                 >
                   <h1>{isEdit ? "Editar Capítulo" : "Nuevo Capítulo"}</h1>
+                  {error && <pre>{JSON.stringify(error)}</pre>}
                   <form className="form-modal">
                     <div className="columns">
                       <div className="column">
@@ -441,17 +444,6 @@ const EditContentChapter = (props) => {
                           src={data.category.image}
                           alt=""
                         />
-                        {/*<ImageUpload
-                          center
-                          id="cap_image"
-                          value={
-                            isEdit && chapterSelected != null
-                              ? chapterSelected.image
-                              : ""
-                          }
-                          onInput={inputHandler}
-                          errorText="Selecciona una imagen"
-                        />*/}
                         <Input
                           id="cap_cstatus_id"
                           label="Status"

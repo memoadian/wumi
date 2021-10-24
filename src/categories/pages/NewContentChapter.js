@@ -113,7 +113,7 @@ const NewContentChapter = (props) => {
       }
     } catch (err) {
       setIsLoading(false);
-      setError(err.errors || "Something went wrong, please try again.");
+      setError(err.response.data.errors);
     }
   };
 
@@ -127,7 +127,7 @@ const NewContentChapter = (props) => {
       </div>
       <div className="card no-margin">
         {isLoading && <Loader asOverlay />}
-        {error}
+        {error && <pre>{JSON.stringify(error)}</pre>}
         <form onSubmit={submitHandler}>
           <div className="columns">
             <div className="column">
