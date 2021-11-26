@@ -5,7 +5,6 @@ import { AuthContext } from "shared/context/auth-context";
 import getContentTypes from "shared/helpers/getContentTypes";
 import getStatus from "shared/helpers/getStatus";
 import getLevels from "shared/helpers/getLevels";
-import ImageUpload from "shared/components/FormElements/ImageUpload";
 import AudioUpload from "shared/components/FormElements/AudioUpload";
 import Input from "shared/components/FormElements/Input";
 import Loader from "shared/UIElements/Loader";

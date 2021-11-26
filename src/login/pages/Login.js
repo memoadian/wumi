@@ -74,8 +74,7 @@ const Login = () => {
     <div className="columns is-centered page-login">
       {isLoading && <Loader asOverlay />}
       <div className="logo">
-        <img src={logo} alt="" width="68" />
-        <p>WUMI</p>
+        <img src={logo} alt="" width="" />
         <div className="slogan">Bienvenido. Es un placer saludarte.</div>
         <div className="sesion">
           Inicia sesión para configurar, editar y crear nuevo contenido
