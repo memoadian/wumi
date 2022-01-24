@@ -67,7 +67,7 @@ const EditContentSingle = (props) => {
           headers: {
             Authorization: `Bearer ${auth.token}`,
           },
-          baseURL: `https://api.wumi.app/api/v1/contents/${props.match.params.id}/`,
+          baseURL: `${process.env.REACT_APP_API_URL}/contents/${props.match.params.id}/`,
           method: "GET",
         });
 
@@ -94,7 +94,7 @@ const EditContentSingle = (props) => {
         headers: {
           Authorization: `Bearer ${auth.token}`,
         },
-        baseURL: `https://api.wumi.app/api/v1/contents/${props.match.params.id}/`,
+        baseURL: `${process.env.REACT_APP_API_URL}/contents/${props.match.params.id}/`,
         method: "PATCH",
         mode: "no-cors",
         data: formData,

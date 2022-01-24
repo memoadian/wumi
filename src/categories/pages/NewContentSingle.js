@@ -57,7 +57,7 @@ const NewContentSingle = (props) => {
         headers: {
           Authorization: `Bearer ${auth.token}`,
         },
-        baseURL: `https://api.wumi.app/api/v1/catalog/categories/${props.match.params.cat_id}/`,
+        baseURL: `${process.env.REACT_APP_API_URL}/catalog/categories/${props.match.params.cat_id}/`,
         method: "GET",
       });
 
@@ -98,7 +98,7 @@ const NewContentSingle = (props) => {
         headers: {
           Authorization: `Bearer ${auth.token}`,
         },
-        baseURL: "https://api.wumi.app/api/v1/contents/",
+        baseURL: `${process.env.REACT_APP_API_URL}/contents/`,
         method: "POST",
         mode: "no-cors",
         data: formData,

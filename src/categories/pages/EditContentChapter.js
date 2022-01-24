@@ -86,7 +86,7 @@ const EditContentChapter = (props) => {
       headers: {
         Authorization: `Bearer ${auth.token}`,
       },
-      baseURL: `https://api.wumi.app/api/v1/contents/${props.match.params.id}/`,
+      baseURL: `${process.env.REACT_APP_API_URL}/contents/${props.match.params.id}/`,
       method: "GET",
     });
 
@@ -100,7 +100,7 @@ const EditContentChapter = (props) => {
       headers: {
         Authorization: `Bearer ${auth.token}`,
       },
-      baseURL: `https://api.wumi.app/api/v1/chapters/?content=${props.match.params.id}`,
+      baseURL: `${process.env.REACT_APP_API_URL}/chapters/?content=${props.match.params.id}`,
       method: "GET",
     });
 
@@ -175,7 +175,7 @@ const EditContentChapter = (props) => {
         headers: {
           Authorization: `Bearer ${auth.token}`,
         },
-        baseURL: `https://api.wumi.app/api/v1/contents/${props.match.params.id}/`,
+        baseURL: `${process.env.REACT_APP_API_URL}/contents/${props.match.params.id}/`,
         method: "PATCH",
         mode: "no-cors",
         data: formData,
@@ -213,7 +213,7 @@ const EditContentChapter = (props) => {
         headers: {
           Authorization: `Bearer ${auth.token}`,
         },
-        baseURL: "https://api.wumi.app/api/v1/chapters/",
+        baseURL: `${process.env.REACT_APP_API_URL}/chapters/`,
         method: "POST",
         mode: "no-cors",
         data: formData,
@@ -254,7 +254,7 @@ const EditContentChapter = (props) => {
         headers: {
           Authorization: `Bearer ${auth.token}`,
         },
-        baseURL: `https://api.wumi.app/api/v1/chapters/${chapterSelected.id}/`,
+        baseURL: `${process.env.REACT_APP_API_URL}/chapters/${chapterSelected.id}/`,
         method: "PATCH",
         mode: "no-cors",
         data: formData,

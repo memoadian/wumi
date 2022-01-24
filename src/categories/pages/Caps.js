@@ -46,7 +46,7 @@ const Caps = () => {
       headers: {
         Authorization: `Bearer ${auth.token}`,
       },
-      baseURL: "https://api.wumi.app/api/v1/catalog/categories/?type_content=1",
+      baseURL: `${process.env.REACT_APP_API_URL}/catalog/categories/?type_content=1`,
       method: "GET",
     });
 
@@ -101,7 +101,7 @@ const Caps = () => {
         headers: {
           Authorization: `Bearer ${auth.token}`,
         },
-        baseURL: `https://api.wumi.app/api/v1/catalog/categories/`,
+        baseURL: `${process.env.REACT_APP_API_URL}/catalog/categories/`,
         method: "POST",
         mode: "no-cors",
         data: formData,
@@ -140,7 +140,7 @@ const Caps = () => {
         headers: {
           Authorization: `Bearer ${auth.token}`,
         },
-        baseURL: `https://api.wumi.app/api/v1/catalog/categories/${categorySelected.id}/`,
+        baseURL: `${process.env.REACT_APP_API_URL}/catalog/categories/${categorySelected.id}/`,
         method: "PATCH",
         mode: "no-cors",
         data: formData,

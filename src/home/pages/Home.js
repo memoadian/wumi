@@ -42,7 +42,7 @@ const Home = () => {
           Authorization: `Bearer ${auth.token}`,
           "Content-Type": "application/json",
         },
-        baseURL: `https://api.wumi.app/api/v1/phrases/1/`,
+        baseURL: `${process.env.REACT_APP_API_URL}/phrases/1/`,
         method: "PATCH",
         mode: "no-cors",
         data: JSON.stringify({
@@ -74,7 +74,7 @@ const Home = () => {
           Authorization: `Bearer ${auth.token}`,
           "Content-Type": "application/json",
         },
-        baseURL: `https://api.wumi.app/api/v1/tags/categories/1/`,
+        baseURL: `${process.env.REACT_APP_API_URL}/tags/categories/1/`,
         method: "PATCH",
         mode: "no-cors",
         data: JSON.stringify({
@@ -104,7 +104,7 @@ const Home = () => {
           Authorization: `Bearer ${auth.token}`,
           "Content-Type": "application/json",
         },
-        baseURL: `https://api.wumi.app/api/v1/tags/categories/2/`,
+        baseURL: `${process.env.REACT_APP_API_URL}/tags/categories/2/`,
         method: "PATCH",
         mode: "no-cors",
         data: JSON.stringify({
@@ -134,7 +134,7 @@ const Home = () => {
         headers: {
           Authorization: `Bearer ${auth.token}`,
         },
-        baseURL: `https://api.wumi.app/api/v1/phrases/`,
+        baseURL: `${process.env.REACT_APP_API_URL}/phrases/`,
         method: "GET",
       });
 
@@ -149,7 +149,7 @@ const Home = () => {
         headers: {
           Authorization: `Bearer ${auth.token}`,
         },
-        baseURL: `https://api.wumi.app/api/v1/tags/categories/`,
+        baseURL: `${process.env.REACT_APP_API_URL}/tags/categories/`,
         method: "GET",
       });
 
@@ -166,7 +166,7 @@ const Home = () => {
       headers: {
         Authorization: `Bearer ${auth.token}`,
       },
-      baseURL: `https://api.wumi.app/api/v1/catalog/categories/?type_content=2`,
+      baseURL: `${process.env.REACT_APP_API_URL}/catalog/categories/?type_content=2`,
       method: "GET",
     });
 
@@ -180,7 +180,7 @@ const Home = () => {
       headers: {
         Authorization: `Bearer ${auth.token}`,
       },
-      baseURL: `https://api.wumi.app/api/v1/catalog/categories/?type_content=1`,
+      baseURL: `${process.env.REACT_APP_API_URL}/catalog/categories/?type_content=1`,
       method: "GET",
     });
 
@@ -195,7 +195,7 @@ const Home = () => {
       headers: {
         Authorization: `Bearer ${auth.token}`,
       },
-      baseURL: `https://api.wumi.app/api/v1/contents/?category=${e.target.value}`,
+      baseURL: `${process.env.REACT_APP_API_URL}/contents/?category=${e.target.value}`,
       method: "GET",
     });
 

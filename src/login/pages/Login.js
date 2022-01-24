@@ -43,7 +43,7 @@ const Login = () => {
 
     try {
       const response = await axios({
-        baseURL: "https://api.wumi.app/api/v1/oauth/login/",
+        baseURL: `${process.env.REACT_APP_API_URL}/oauth/login/`,
         method: "POST",
         data: {
           email: formState.inputs.email.value,

@@ -1,30 +1,30 @@
-import axios from "axios"
+import axios from "axios";
 
-const getStatus = async token => {
-    const client = axios.create({
-        baseURL: 'https://api.wumi.app/api/v1',
-        headers: {
-            Authorization: `Bearer ${token}`,
-        },
-        mode: 'no-cors'
-    })
+const getStatus = async (token) => {
+  const client = axios.create({
+    baseURL: `${process.env.REACT_APP_API_URL}`,
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+    mode: "no-cors",
+  });
 
-    if (token) {
-        const resp = await client.get('/catalog/status/')
-        
-        const {results} = await resp.data
+  if (token) {
+    const resp = await client.get("/catalog/status/");
 
-        const data = results.map(item => {
-            return {
-                id: item.id,
-                url: item.url,
-                title: item.title,
-                is_active: item.is_active,
-            }
-        })
+    const { results } = await resp.data;
 
-        return data
-    }
-}
+    const data = results.map((item) => {
+      return {
+        id: item.id,
+        url: item.url,
+        title: item.title,
+        is_active: item.is_active,
+      };
+    });
 
-export default getStatus
+    return data;
+  }
+};
+
+export default getStatus;

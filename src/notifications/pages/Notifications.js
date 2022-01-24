@@ -46,7 +46,7 @@ const Notifications = () => {
         headers: {
           Authorization: `Bearer ${auth.token}`,
         },
-        baseURL: "https://api.wumi.app/api/v1/notifications/",
+        baseURL: `${process.env.REACT_APP_API_URL}/notifications/`,
         method: "POST",
         data: {
           title: formState.inputs.title.value,
