@@ -53,7 +53,9 @@ const Home = () => {
       setIsLoading(false);
 
       if (resp.status === 200) {
-        setPhrase(resp.data.title);
+        if (resp.data != null) {
+          setPhrase(resp.data.title);
+        }
       } else {
         //setError(resp)
         console.log(resp.status);
@@ -85,7 +87,9 @@ const Home = () => {
       setIsLoading(false);
 
       if (resp.status === 200) {
-        //setPhrase(resp.data.title)
+        if (resp.data != null) {
+          setPhrase(resp.data.title);
+        }
       } else {
         //setError(resp)
         console.log(resp.status);
@@ -115,10 +119,11 @@ const Home = () => {
       setIsLoading(false);
 
       if (resp.status === 200) {
-        //setPhrase(resp.data.title)
+        if (resp.data != null) {
+          setPhrase(resp.data.title);
+        }
       } else {
         //setError(resp)
-        console.log(resp.status);
       }
     } catch (error) {
       setIsLoading(false);
@@ -139,7 +144,9 @@ const Home = () => {
       });
 
       if (response.status === 200) {
-        setPhrase(response.data.results[0].title);
+        if (response.data.results[0] != null) {
+          setPhrase(response.data.results[0].title);
+        }
       }
     };
     getPhrase();
@@ -154,8 +161,12 @@ const Home = () => {
       });
 
       if (response.status === 200) {
-        setCardsMedit(response.data.results[0].categories);
-        setCardsCap(response.data.results[1].categories);
+        if (response.data.results[0] != null) {
+          setCardsMedit(response.data.results[0].categories);
+        }
+        if (response.data.results[1] != null) {
+          setCardsCap(response.data.results[1].categories);
+        }
       }
     };
     getCategories();
