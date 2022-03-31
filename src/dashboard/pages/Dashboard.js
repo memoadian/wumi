@@ -56,9 +56,9 @@ const Dashboard = () => {
   ];
 
   const total = mostCategories.reduce((sum, { value }) => sum + value, 0);
-  console.log(total);
+
   const labels = mostCategories.map((m) => (
-    <li>
+    <li key={m.id}>
       <span className="circle" style={{ backgroundColor: m.color }}></span>{" "}
       {m.title}
       <span className="num">
