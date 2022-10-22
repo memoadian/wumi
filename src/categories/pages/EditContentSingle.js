@@ -1,159 +1,156 @@
-import React, { useState, useContext, useEffect } from "react";
-import { useForm } from "shared/hooks/form-hook";
-import { useHistory } from "react-router-dom";
-import { AuthContext } from "shared/context/auth-context";
-import getContentTypes from "shared/helpers/getContentTypes";
-import getStatus from "shared/helpers/getStatus";
-import getLevels from "shared/helpers/getLevels";
-import AudioUpload from "shared/components/FormElements/AudioUpload";
-import Input from "shared/components/FormElements/Input";
-import Loader from "shared/UIElements/Loader";
-import axios from "axios";
+import React, { useState, useContext, useEffect } from 'react'
+import { useForm } from 'shared/hooks/form-hook'
+import { useHistory } from 'react-router-dom'
+import { AuthContext } from 'shared/context/auth-context'
+import getContentTypes from 'shared/helpers/getContentTypes'
+import getStatus from 'shared/helpers/getStatus'
+import getLevels from 'shared/helpers/getLevels'
+import AudioUpload from 'shared/components/FormElements/AudioUpload'
+import Input from 'shared/components/FormElements/Input'
+import Loader from 'shared/UIElements/Loader'
+import axios from 'axios'
 
-import "./Form.css";
+import './Form.css'
 
 const EditContentSingle = (props) => {
-  const history = useHistory();
-  const auth = useContext(AuthContext);
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState();
-  const [contentTypes, setContentTypes] = useState([]);
-  const [status, setStatus] = useState([]);
-  const [levels, setLevels] = useState([]);
-  const [data, setData] = useState(null);
+  const history = useHistory()
+  const auth = useContext(AuthContext)
+  const [isLoading, setIsLoading] = useState(false)
+  const [error, setError] = useState()
+  const [status, setStatus] = useState([])
+  const [levels, setLevels] = useState([])
+  const [data, setData] = useState(null)
   const [formState, inputHandler] = useForm(
     {
       title: {
-        value: "",
-        isValid: false,
+        value: '',
+        isValid: false
       },
       description: {
-        value: "",
-        isValid: false,
+        value: '',
+        isValid: false
       },
       level_id: {
-        value: "",
-        isValid: false,
+        value: '',
+        isValid: false
       },
       image: {
         value: null,
-        isValid: false,
+        isValid: false
       },
       cstatus_id: {
-        value: "",
-        isValid: false,
-      },
+        value: '',
+        isValid: false
+      }
     },
     false
-  );
+  )
 
   useEffect(() => {
     if (auth.token) {
       getContentTypes(auth.token).then((ct) => {
-        setContentTypes(ct);
-      });
+        //setContentTypes(ct)
+      })
 
       getStatus(auth.token).then((status) => {
-        setStatus(status);
-      });
+        setStatus(status)
+      })
 
       getLevels(auth.token).then((levels) => {
-        setLevels(levels);
-      });
+        setLevels(levels)
+      })
 
       const getContent = async () => {
-        setIsLoading(true);
+        setIsLoading(true)
         const response = await axios({
           headers: {
-            Authorization: `Bearer ${auth.token}`,
+            Authorization: `Bearer ${auth.token}`
           },
           baseURL: `${process.env.REACT_APP_API_URL}/contents/${props.match.params.id}/`,
-          method: "GET",
-        });
+          method: 'GET'
+        })
 
-        setData(response.data);
-        setIsLoading(false);
-      };
-      getContent();
+        setData(response.data)
+        setIsLoading(false)
+      }
+      getContent()
     }
-  }, [auth]);
+  }, [auth])
 
   const submitHandler = async (e) => {
-    e.preventDefault();
-    setIsLoading(true);
+    e.preventDefault()
+    setIsLoading(true)
 
-    const formData = new FormData();
-    formData.append("title", formState.inputs.title.value);
-    formData.append("description", formState.inputs.description.value);
-    formData.append("order", 1);
-    formData.append("level_id", formState.inputs.level_id.value);
-    formData.append("cstatus_id", formState.inputs.cstatus_id.value);
+    const formData = new FormData()
+    formData.append('title', formState.inputs.title.value)
+    formData.append('description', formState.inputs.description.value)
+    formData.append('order', 1)
+    formData.append('level_id', formState.inputs.level_id.value)
+    formData.append('cstatus_id', formState.inputs.cstatus_id.value)
 
     try {
       const resp = await axios({
         headers: {
-          Authorization: `Bearer ${auth.token}`,
+          Authorization: `Bearer ${auth.token}`
         },
         baseURL: `${process.env.REACT_APP_API_URL}/contents/${props.match.params.id}/`,
-        method: "PATCH",
-        mode: "no-cors",
-        data: formData,
-      });
+        method: 'PATCH',
+        mode: 'no-cors',
+        data: formData
+      })
 
-      setIsLoading(false);
+      setIsLoading(false)
 
       if (resp.status === 200) {
-        console.log(resp.data);
-        history.replace(`/category/${resp.data.category.id}`);
+        history.replace(`/category/${resp.data.category.id}`)
       } else {
         //setError(resp)
-        console.log(resp.status);
       }
     } catch (err) {
-      setIsLoading(false);
-      setError(err.errors || "Something went wrong, please try again.");
+      setIsLoading(false)
+      setError(err.errors || 'Something went wrong, please try again.')
     }
-  };
+  }
 
   return (
     <div>
-      <div className="title-h1">
+      <div className='title-h1'>
         <h1>Nuevo Contenido / Individual</h1>
-        <button className="button right-h1" onClick={submitHandler}>
+        <button className='button right-h1' onClick={submitHandler}>
           Guardar
         </button>
       </div>
-      <div className="card no-margin">
+      <div className='card no-margin'>
         {error}
         {isLoading && <Loader asOverlay />}
         {data && (
           <form onSubmit={submitHandler}>
-            <div className="columns">
-              <div className="column">
+            <div className='columns'>
+              <div className='column'>
                 <Input
-                  id="title"
-                  label="Título"
+                  id='title'
+                  label='Título'
                   validators={[]}
                   value={data.title}
                   onInput={inputHandler}
                 />
                 <Input
-                  id="description"
-                  label="Description"
-                  element="textarea"
+                  id='description'
+                  label='Description'
+                  element='textarea'
                   value={data.description}
                   validators={[]}
                   onInput={inputHandler}
                 />
                 <Input
-                  id="level_id"
-                  label="Nivel"
-                  element="select"
+                  id='level_id'
+                  label='Nivel'
+                  element='select'
                   value={data.level.id}
                   validators={[]}
                   onInput={inputHandler}
                 >
-                  <option value="">Seleccionar</option>
+                  <option value=''>Seleccionar</option>
                   {levels &&
                     levels.map((level) => (
                       <option key={level.id} value={level.id}>
@@ -162,17 +159,17 @@ const EditContentSingle = (props) => {
                     ))}
                 </Input>
               </div>
-              <div className="column">
+              <div className='column'>
                 <AudioUpload
-                  id="audio"
+                  id='audio'
                   value={data.content_asset && data.content_asset.asset}
                   isChapter={false}
                   contentId={props.match.params.id}
                 />
                 <img
-                  style={{ width: "100%" }}
+                  style={{ width: '100%' }}
                   src={data.category.image}
-                  alt=""
+                  alt=''
                 />
                 {/*<ImageUpload 
                                 center
@@ -182,14 +179,14 @@ const EditContentSingle = (props) => {
                                 errorText="Selecciona una imagen"
                             />*/}
                 <Input
-                  id="cstatus_id"
-                  label="Status"
-                  element="select"
+                  id='cstatus_id'
+                  label='Status'
+                  element='select'
                   value={data.cstatus.id}
                   validators={[]}
                   onInput={inputHandler}
                 >
-                  <option value="">Seleccionar</option>
+                  <option value=''>Seleccionar</option>
                   {status &&
                     status.map((status) => (
                       <option key={status.id} value={status.id}>
@@ -198,13 +195,13 @@ const EditContentSingle = (props) => {
                     ))}
                 </Input>
               </div>
-              <div className="column"></div>
+              <div className='column'></div>
             </div>
           </form>
         )}
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default EditContentSingle;
+export default EditContentSingle

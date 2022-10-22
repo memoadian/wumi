@@ -1,184 +1,181 @@
-import { useState, useContext, useEffect } from "react";
-import { AuthContext } from "shared/context/auth-context";
-import { useForm } from "shared/hooks/form-hook";
-import axios from "axios";
-import Scrollbars from "react-custom-scrollbars-2";
-import Modal from "react-modal";
-import CardCategory from "categories/components/CardCategory";
-import Loader from "shared/UIElements/Loader";
-import Input from "shared/components/FormElements/Input";
-import ImageUpload from "shared/components/FormElements/ImageUpload";
+import { useState, useContext, useEffect } from 'react'
+import { AuthContext } from 'shared/context/auth-context'
+import { useForm } from 'shared/hooks/form-hook'
+import axios from 'axios'
+import Scrollbars from 'react-custom-scrollbars-2'
+import Modal from 'react-modal'
+import CardCategory from 'categories/components/CardCategory'
+import Loader from 'shared/UIElements/Loader'
+import Input from 'shared/components/FormElements/Input'
+import ImageUpload from 'shared/components/FormElements/ImageUpload'
 
 const Caps = () => {
-  const auth = useContext(AuthContext);
-  const [isLoading, setIsLoading] = useState(false);
-  const [openModal, setOpenModal] = useState(false);
-  const [categories, setCategories] = useState([]);
-  const [isEditMode, setIsEditMode] = useState(false);
-  const [categorySelected, setCategorySelected] = useState(null);
-  const [color, setColor] = useState(null);
-  const [colors, setColors] = useState([]);
+  const auth = useContext(AuthContext)
+  const [isLoading, setIsLoading] = useState(false)
+  const [openModal, setOpenModal] = useState(false)
+  const [categories, setCategories] = useState([])
+  const [isEditMode, setIsEditMode] = useState(false)
+  const [categorySelected, setCategorySelected] = useState(null)
+  const [colors, setColors] = useState([])
   const [formState, inputHandler] = useForm(
     {
       title: {
-        value: "",
-        isValid: false,
+        value: '',
+        isValid: false
       },
       description: {
-        value: "",
-        isValid: false,
+        value: '',
+        isValid: false
       },
       color: {
-        value: "",
-        isValid: false,
+        value: '',
+        isValid: false
       },
       image: {
         value: null,
-        isValid: false,
-      },
+        isValid: false
+      }
     },
     false
-  );
+  )
 
   const fetchCategories = async () => {
-    setIsLoading(true);
+    setIsLoading(true)
     const response = await axios({
       headers: {
-        Authorization: `Bearer ${auth.token}`,
+        Authorization: `Bearer ${auth.token}`
       },
       baseURL: `${process.env.REACT_APP_API_URL}/catalog/categories/?type_content=1`,
-      method: "GET",
-    });
+      method: 'GET'
+    })
 
-    setCategories(response.data.results);
-    setIsLoading(false);
-  };
+    setCategories(response.data.results)
+    setIsLoading(false)
+  }
 
   useEffect(() => {
     if (!auth.token) {
-      return;
+      return
     }
-    fetchCategories();
+    fetchCategories()
     setColors([
-      { id: "azul", title: "Azul" },
-      { id: "amarillo", title: "Amarillo" },
-      { id: "verde", title: "Verde" },
-      { id: "naranja", title: "Naranja" },
-      { id: "turqueza", title: "Turqueza" },
-      { id: "morado", title: "Morado" },
-    ]);
-  }, [auth]);
+      { id: 'azul', title: 'Azul' },
+      { id: 'amarillo', title: 'Amarillo' },
+      { id: 'verde', title: 'Verde' },
+      { id: 'naranja', title: 'Naranja' },
+      { id: 'turqueza', title: 'Turqueza' },
+      { id: 'morado', title: 'Morado' }
+    ])
+  }, [auth])
 
   const handleOpenModal = (data) => {
     if (data.editMode) {
-      setIsEditMode(true);
+      setIsEditMode(true)
     }
     if (data.id !== null) {
-      setCategorySelected(categories.find((cat) => cat.id === data.id));
+      setCategorySelected(categories.find((cat) => cat.id === data.id))
     }
-    setOpenModal(true);
-  };
+    setOpenModal(true)
+  }
 
   const handleCloseModal = () => {
-    setIsEditMode(false);
-    setOpenModal(false);
-  };
+    setIsEditMode(false)
+    setOpenModal(false)
+  }
 
   const submitCategory = async (e) => {
-    e.preventDefault();
+    e.preventDefault()
 
-    const formData = new FormData();
-    formData.append("title", formState.inputs.title.value);
-    formData.append("description", formState.inputs.description.value);
-    formData.append("color", formState.inputs.color.value);
-    formData.append("type_content_id", 1);
-    formData.append("is_active", 1);
-    formData.append("image", formState.inputs.image.value);
+    const formData = new FormData()
+    formData.append('title', formState.inputs.title.value)
+    formData.append('description', formState.inputs.description.value)
+    formData.append('color', formState.inputs.color.value)
+    formData.append('type_content_id', 1)
+    formData.append('is_active', 1)
+    formData.append('image', formState.inputs.image.value)
 
     try {
-      setIsLoading(true);
+      setIsLoading(true)
       const resp = await axios({
         headers: {
-          Authorization: `Bearer ${auth.token}`,
+          Authorization: `Bearer ${auth.token}`
         },
         baseURL: `${process.env.REACT_APP_API_URL}/catalog/categories/`,
-        method: "POST",
-        mode: "no-cors",
-        data: formData,
-      });
+        method: 'POST',
+        mode: 'no-cors',
+        data: formData
+      })
 
-      setIsLoading(false);
+      setIsLoading(false)
 
       if (resp.status === 201) {
-        handleCloseModal();
-        fetchCategories();
+        handleCloseModal()
+        fetchCategories()
       } else {
         //setError(resp)
-        console.log(resp.status);
       }
     } catch (err) {
-      setIsLoading(false);
+      setIsLoading(false)
       //setError(err.errors || 'Something went wrong, please try again.')
     }
-  };
+  }
 
   const updateCategory = async (e) => {
-    e.preventDefault();
+    e.preventDefault()
 
-    const formData = new FormData();
-    formData.append("title", formState.inputs.title.value);
-    formData.append("description", formState.inputs.description.value);
-    formData.append("color", formState.inputs.color.value);
-    formData.append("is_active", 1);
+    const formData = new FormData()
+    formData.append('title', formState.inputs.title.value)
+    formData.append('description', formState.inputs.description.value)
+    formData.append('color', formState.inputs.color.value)
+    formData.append('is_active', 1)
     if (formState.inputs.image.value != null) {
-      formData.append("image", formState.inputs.image.value);
+      formData.append('image', formState.inputs.image.value)
     }
 
     try {
-      setIsLoading(true);
+      setIsLoading(true)
       const resp = await axios({
         headers: {
-          Authorization: `Bearer ${auth.token}`,
+          Authorization: `Bearer ${auth.token}`
         },
         baseURL: `${process.env.REACT_APP_API_URL}/catalog/categories/${categorySelected.id}/`,
-        method: "PATCH",
-        mode: "no-cors",
-        data: formData,
-      });
+        method: 'PATCH',
+        mode: 'no-cors',
+        data: formData
+      })
 
-      setIsLoading(false);
+      setIsLoading(false)
 
       if (resp.status === 200) {
-        handleCloseModal();
-        fetchCategories();
+        handleCloseModal()
+        fetchCategories()
       } else {
         //setError(resp)
-        console.log(resp.status);
       }
     } catch (err) {
-      setIsLoading(false);
+      setIsLoading(false)
       //setError(err.errors || 'Something went wrong, please try again.')
     }
-  };
+  }
 
   const customStyles = {
     content: {
-      width: "50%",
-      height: "80%",
-      top: "50%",
-      left: "50%",
-      right: "auto",
-      bottom: "auto",
-      marginRight: "-50%",
-      transform: "translate(-50%, -50%)",
-      padding: "36px 75px",
-      border: "none",
-      borderRadius: "30px",
-    },
-  };
+      width: '50%',
+      height: '80%',
+      top: '50%',
+      left: '50%',
+      right: 'auto',
+      bottom: 'auto',
+      marginRight: '-50%',
+      transform: 'translate(-50%, -50%)',
+      padding: '36px 75px',
+      border: 'none',
+      borderRadius: '30px'
+    }
+  }
 
   const listItems = categories.map(({ id, title, color, description }) => (
-    <div key={id} className="column is-one-quarter-desktop is-half-tablet">
+    <div key={id} className='column is-one-quarter-desktop is-half-tablet'>
       <CardCategory
         id={id}
         title={title}
@@ -187,26 +184,26 @@ const Caps = () => {
         onClickEdit={handleOpenModal}
       />
     </div>
-  ));
+  ))
 
   return (
     <div>
-      <div className="title-h1">
+      <div className='title-h1'>
         <h1>Categorías Capsulas</h1>
-        <button className="button right-h1" onClick={handleOpenModal}>
+        <button className='button right-h1' onClick={handleOpenModal}>
           Nueva Categoría
         </button>
       </div>
-      <div className="card no-margin">
+      <div className='card no-margin'>
         {isLoading && <Loader asOverlay />}
         <Scrollbars
           style={{ height: 650 }}
           renderTrackHorizontal={(props) => (
-            <div {...props} style={{ display: "none" }} />
+            <div {...props} style={{ display: 'none' }} />
           )}
         >
-          <div className="padding-container" style={{ padding: "20px" }}>
-            <div className="columns is-multiline">{listItems}</div>
+          <div className='padding-container' style={{ padding: '20px' }}>
+            <div className='columns is-multiline'>{listItems}</div>
           </div>
         </Scrollbars>
         <Modal
@@ -214,79 +211,79 @@ const Caps = () => {
           isOpen={openModal}
           style={customStyles}
           onRequestClose={handleCloseModal}
-          overlayClassName="Overlay"
+          overlayClassName='Overlay'
         >
-          <h1>{isEditMode ? "Editar Categoría" : "Nueva Categoría"}</h1>
-          <form className="form-modal">
-            <div className="columns">
-              <div className="column">
+          <h1>{isEditMode ? 'Editar Categoría' : 'Nueva Categoría'}</h1>
+          <form className='form-modal'>
+            <div className='columns'>
+              <div className='column'>
                 <Input
-                  id="title"
-                  value={isEditMode ? categorySelected.title : ""}
-                  element="text"
-                  label="Nombre"
+                  id='title'
+                  value={isEditMode ? categorySelected.title : ''}
+                  element='text'
+                  label='Nombre'
                   validators={[]}
                   onInput={inputHandler}
                 />
                 <Input
-                  id="description"
-                  value={isEditMode ? categorySelected.description : ""}
-                  element="textarea"
-                  label="Descripción"
+                  id='description'
+                  value={isEditMode ? categorySelected.description : ''}
+                  element='textarea'
+                  label='Descripción'
                   validators={[]}
                   onInput={inputHandler}
                 />
-                <div className="columns">
-                  <div className="column">
+                <div className='columns'>
+                  <div className='column'>
                     <Input
-                      id="color"
-                      label="Color"
-                      element="select"
+                      id='color'
+                      label='Color'
+                      element='select'
                       validators={[]}
-                      value={isEditMode ? categorySelected.color : ""}
+                      value={isEditMode ? categorySelected.color : ''}
                       onInput={inputHandler}
                     >
-                      <option value="">Seleccionar</option>
+                      <option value=''>Seleccionar</option>
                       {colors &&
                         colors.map((color) => {
                           return (
                             <option key={color.id} value={color.id}>
                               {color.title}
                             </option>
-                          );
+                          )
                         })}
                     </Input>
                   </div>
                 </div>
               </div>
-              <div className="column">
+              <div className='column'>
                 {isEditMode && (
                   <img
-                    style={{ width: "50%", margin: "0 auto", display: "block" }}
+                    style={{ width: '50%', margin: '0 auto', display: 'block' }}
                     src={categorySelected.image}
-                    alt=""
+                    alt=''
                   />
                 )}
                 <ImageUpload
                   center
-                  id="image"
+                  id='image'
                   onInput={inputHandler}
-                  errorText="Selecciona una imagen"
+                  errorText='Selecciona una imagen'
                 />
               </div>
             </div>
-            <div className="columns">
-              <div className="column buttons">
+            <div className='columns'>
+              <div className='column buttons'>
                 <button
                   onClick={handleCloseModal}
-                  type="button"
-                  className="button cancel"
+                  type='button'
+                  className='button cancel'
                 >
                   Cancelar
                 </button>
                 <button
                   onClick={isEditMode ? updateCategory : submitCategory}
-                  className="button submit"
+                  className='button submit'
                 >
                   Guardar
                 </button>
@@ -296,7 +293,7 @@ const Caps = () => {
         </Modal>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default Caps;
+export default Caps
