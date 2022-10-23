@@ -129,40 +129,52 @@ const Home = () => {
       return
     }
     const getPhrase = async () => {
-      const response = await axios({
-        headers: {
-          Authorization: `Bearer ${auth.token}`
-        },
-        baseURL: `${process.env.REACT_APP_API_URL}/phrases/`,
-        method: 'GET'
-      })
+      try {
+        const response = await axios({
+          headers: {
+            Authorization: `Bearer ${auth.token}`
+          },
+          baseURL: `${process.env.REACT_APP_API_URL}/phrases/`,
+          method: 'GET'
+        })
 
-      if (response.status === 200) {
-        if (response.data.results[0] != null) {
-          setPhrase(response.data.results[0].title)
+        if (response.status === 200) {
+          if (response.data.results[0] != null) {
+            setPhrase(response.data.results[0].title)
+          }
         }
+      } catch (error) {
+        console.log(error)
       }
     }
-    getPhrase()
 
     const getCategories = async () => {
-      const response = await axios({
-        headers: {
-          Authorization: `Bearer ${auth.token}`
-        },
-        baseURL: `${process.env.REACT_APP_API_URL}/tags/categories/`,
-        method: 'GET'
-      })
+      setIsLoading(true)
+      try {
+        const response = await axios({
+          headers: {
+            Authorization: `Bearer ${auth.token}`
+          },
+          baseURL: `${process.env.REACT_APP_API_URL}/tags/categories/`,
+          method: 'GET'
+        })
 
-      if (response.status === 200) {
-        if (response.data.results[0] != null) {
-          setCardsMedit(response.data.results[0].categories)
+        if (response.status === 200) {
+          if (response.data.results[0] != null) {
+            setCardsMedit(response.data.results[0].categories)
+          }
+          if (response.data.results[1] != null) {
+            setCardsCap(response.data.results[1].categories)
+          }
         }
-        if (response.data.results[1] != null) {
-          setCardsCap(response.data.results[1].categories)
-        }
+      } catch (error) {
+        console.log(error)
+      } finally {
+        setIsLoading(false)
       }
     }
+
+    getPhrase()
     getCategories()
   }, [auth])
 
