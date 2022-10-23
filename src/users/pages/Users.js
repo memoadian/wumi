@@ -6,7 +6,7 @@ import Modal from 'react-modal'
 import Table from 'shared/components/DataTable/Table'
 
 import './Users.css'
-import Loader from 'UIElements/Loader'
+import Loader from 'shared/UIElements/Loader'
 
 const Users = (props) => {
   const auth = useContext(AuthContext)

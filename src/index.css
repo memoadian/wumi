@@ -254,7 +254,7 @@ h1 span {
   background-color: #fff;
   display: block;
   border-radius: 16px;
-  width: 70%;
+  width: 100%;
   margin: 0 auto 20px;
 }
 .card-category-header {
@@ -287,6 +287,13 @@ h1 span {
   width: 50%;
   padding: 15px 0;
   text-align: center;
+}
+.link-span {
+  color: #ff7d54;
+  cursor: pointer;
+}
+.link-span:hover {
+  color: #000;
 }
 
 .back-blue {

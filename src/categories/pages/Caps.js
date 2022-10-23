@@ -188,6 +188,7 @@ const Caps = () => {
 
   return (
     <div>
+      {isLoading && <Loader asOverlay />}
       <div className='title-h1'>
         <h1>Categorías Capsulas</h1>
         <button className='button right-h1' onClick={handleOpenModal}>
@@ -195,7 +196,6 @@ const Caps = () => {
         </button>
       </div>
       <div className='card no-margin'>
-        {isLoading && <Loader asOverlay />}
         <Scrollbars
           style={{ height: 650 }}
           renderTrackHorizontal={(props) => (

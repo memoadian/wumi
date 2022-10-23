@@ -47,7 +47,7 @@ const CardCategory = (props) => {
           <NavLink to={`/category/${props.id}`}>
             <span className='left'>Ingresar</span>
           </NavLink>
-          <span className='right' onClick={trigger}>
+          <span className='right link-span' onClick={trigger}>
             Editar
           </span>
         </div>
