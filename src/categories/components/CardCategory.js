@@ -33,6 +33,10 @@ const CardCategory = (props) => {
     props.onClickEdit({ editMode: true, id: props.id })
   }
 
+  const triggerDelete = () => {
+    props.onClickDelete({ id: props.id })
+  }
+
   return (
     <>
       <div className='card-category'>
@@ -49,6 +53,9 @@ const CardCategory = (props) => {
           </NavLink>
           <span className='right link-span' onClick={trigger}>
             Editar
+          </span>
+          <span className='bottom link-span' onClick={triggerDelete}>
+            Eliminar
           </span>
         </div>
       </div>

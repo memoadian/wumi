@@ -21,7 +21,7 @@ const Users = (props) => {
   const [totalNumPages, setTotalNumPages] = useState(1)
   const [error, setError] = useState(null)
 
-  let limit = 20
+  let limit = 10
   let offset = 0
   let totalUsersTemp = 0
   const searchParams = new URLSearchParams(props.location.search)
@@ -327,25 +327,29 @@ const Users = (props) => {
                         <p>Fecha de Creación</p>
                         <span>{userSelected.date_joined}</span>
                       </div>
-                      <div className='row'>
-                        <p>Nombre</p>
-                        <span>{userSelected.first_name}</span>
-                      </div>
-                      <div className='row'>
-                        <p>Apellido</p>
-                        <span>{userSelected.last_name}</span>
+                      <div className='columns'>
+                        <div className='column'>
+                          <p>Nombre</p>
+                          <span>{userSelected.first_name}</span>
+                        </div>
+                        <div className='column'>
+                          <p>Apellido</p>
+                          <span>{userSelected.last_name}</span>
+                        </div>
                       </div>
                       <div className='row'>
                         <p>Correo</p>
                         <span>{userSelected.email}</span>
                       </div>
-                      <div className='row'>
-                        <p>Género</p>
-                        <span>{userSelected.gender.title}</span>
-                      </div>
-                      <div className='row'>
-                        <p>Rango de edad</p>
-                        <span>{userSelected.age.title}</span>
+                      <div className='columns'>
+                        <div className='column'>
+                          <p>Género</p>
+                          <span>{userSelected.gender.title}</span>
+                        </div>
+                        <div className='column'>
+                          <p>Rango de edad</p>
+                          <span>{userSelected.age.title}</span>
+                        </div>
                       </div>
                       <div className='row'>
                         <p>Momento</p>
@@ -356,7 +360,39 @@ const Users = (props) => {
                         <span>{userSelected.opportunity.title}</span>
                       </div>
                     </div>
-                    <div className='column'></div>
+                    <div className='column'>
+                      <div className='columns'>
+                        <div className='column'>
+                          <p>Meditaciones totales:</p>
+                          <big style={{ fontSize: '30px', fontWeight: 'bold' }}>
+                            23
+                          </big>
+                        </div>
+                        <div className='column'>
+                          <p>Capsulas totales: </p>
+                          <big style={{ fontSize: '30px', fontWeight: 'bold' }}>
+                            5
+                          </big>
+                        </div>
+                      </div>
+                      <div className='columns'>
+                        <div className='column'>
+                          <p>Última meditación:</p>
+                          <span>Escaneo Corporal / 23.08.2022</span>
+                        </div>
+                      </div>
+                      <div className='columns'>
+                        <div className='column'>
+                          <p>Categoría</p>
+                        </div>
+                        <div className='column'>
+                          <p>Meditaciones</p>
+                        </div>
+                        <div className='column'>
+                          <p>Categoría</p>
+                        </div>
+                      </div>
+                    </div>
                   </div>
                 )}
               </Modal>

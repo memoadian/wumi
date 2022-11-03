@@ -215,11 +215,12 @@ const Category = (props) => {
       accessor: 'id',
       Cell: (row) => (
         <>
+          {console.log(row.data)}
           <NavLink
             to={
               row.is_individual
-                ? `/edit-single/${row.id}`
-                : `/edit-chapter/${row.id}`
+                ? `/edit-single/${row.data.id}`
+                : `/edit-chapter/60`
             }
           >
             Edit

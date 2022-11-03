@@ -17,6 +17,8 @@ const Medit = () => {
   const [isEditMode, setIsEditMode] = useState(false)
   const [categorySelected, setCategorySelected] = useState(null)
   const [colors, setColors] = useState([])
+  const [showModal, setShowModal] = useState('')
+  const [meditId, setMeditId] = useState(null)
   const [formState, inputHandler] = useForm(
     {
       title: {
@@ -81,6 +83,16 @@ const Medit = () => {
   const handleCloseModal = () => {
     if (isEditMode) setIsEditMode(false)
     setOpenModal(false)
+  }
+
+  const openModalDelete = (id) => {
+    setShowModal('is-active')
+    setMeditId(id)
+  }
+
+  const closeModalDelete = () => {
+    setShowModal('')
+    setMeditId(null)
   }
 
   const submitCategory = async (e) => {
@@ -158,6 +170,8 @@ const Medit = () => {
     }
   }
 
+  const deleteMedit = async () => {}
+
   const customStyles = {
     content: {
       width: '50%',
@@ -182,6 +196,7 @@ const Medit = () => {
         background={color}
         description={description}
         onClickEdit={handleOpenModal}
+        onClickDelete={openModalDelete}
       />
     </div>
   ))
@@ -206,6 +221,36 @@ const Medit = () => {
             <div className='columns is-multiline'>{listItems}</div>
           </div>
         </Scrollbars>
+        <div className={`modal ${showModal}`}>
+          <div className='modal-background'></div>
+          <div className='modal-content'>
+            <div className='modal-card'>
+              <header className='modal-card-head'>
+                <p className='modal-card-title'>Confirmar</p>
+                <button
+                  className='delete'
+                  aria-label='close'
+                  onClick={() => closeModalDelete()}
+                ></button>
+              </header>
+              <section className='modal-card-body'>
+                Confirma que deseas eliminar esta meditacion, esta acción solo
+                se puede revertir desde el panel de administración de backend.
+              </section>
+              <footer className='modal-card-foot'>
+                <button
+                  className='button is-danger'
+                  onClick={() => deleteMedit(meditId)}
+                >
+                  Eliminar Meditacion
+                </button>
+                <button className='button' onClick={() => closeModalDelete()}>
+                  Cancelar
+                </button>
+              </footer>
+            </div>
+          </div>
+        </div>
         <Modal
           ariaHideApp={false}
           isOpen={openModal}
