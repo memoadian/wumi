@@ -125,14 +125,29 @@ const Medit = () => {
       setIsLoading(false)
 
       if (resp.status === 201) {
+        NotificationManager.success(
+          'Success',
+          'Meditación creada con éxito',
+          30000
+        )
         handleCloseModal()
         fetchCategories()
       } else {
         //setError(resp)
+        NotificationManager.error(
+          'Error',
+          'Ha ocurrido un error al crear la meditación',
+          30000
+        )
       }
     } catch (err) {
       setIsLoading(false)
       //setError(err.errors || 'Something went wrong, please try again.')
+      NotificationManager.error(
+        'Error',
+        JSON.stringify(err.response.data.errors),
+        30000
+      )
     }
   }
 
@@ -216,6 +231,7 @@ const Medit = () => {
       )
     }
 
+    fetchCategories()
     setShowModal('')
     setMeditId(null)
   }
