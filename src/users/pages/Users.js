@@ -40,44 +40,26 @@ const Users = (props) => {
     let pages = []
     if (total > 10) {
       for (let i = 1; i <= total; i++) {
-        if (
-          i === 1 ||
-          i === 2 ||
-          i === total ||
-          i === total - 1 ||
-          (i >= page - 2 && i <= page + 2)
-        ) {
-          if (pages.indexOf(i) === -1) {
-            pages.push(i)
-          }
+        if (i <= 2 || i >= total - 2 || (i >= page - 2 && i <= page + 2)) {
+          pages.push(i)
         }
 
-        if (page === 1 || page === 2 || page === total || page === total - 1) {
+        if (page <= 2 || page >= total - 1) {
           if (
             i >= Math.floor(total / 2) - 2 &&
             i <= Math.floor(total / 2) + 2
           ) {
-            if (pages.indexOf(i) === -1) {
-              pages.push(i)
-            }
+            pages.push(i)
           }
         }
 
-        if (page === 3) {
-          if (i === 5) {
-            if (pages.indexOf(i) === -1) {
-              pages.push(i)
-            }
-          }
+        if (page === total - 2 && i === total - 4) {
+          pages.push(i)
         }
+      }
 
-        if (page === total - 2) {
-          if (i === total - 4) {
-            if (pages.indexOf(i) === -1) {
-              pages.push(i)
-            }
-          }
-        }
+      if (page <= 2 && total > 15) {
+        pages.splice(page + 2, 0, '...')
       }
 
       if (page > 5) {
@@ -85,7 +67,7 @@ const Users = (props) => {
       }
 
       if (page < total - 4) {
-        pages.splice(pages.length - 2, 0, '...')
+        pages.splice(pages.length - 3, 0, '...')
       }
     } else {
       for (let i = 1; i <= total; i++) {
