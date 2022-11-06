@@ -8,6 +8,8 @@ import CardCategory from 'categories/components/CardCategory'
 import Loader from 'shared/UIElements/Loader'
 import Input from 'shared/components/FormElements/Input'
 import ImageUpload from 'shared/components/FormElements/ImageUpload'
+import 'react-notifications/lib/notifications.css'
+import { NotificationContainer, NotificationManager } from 'react-notifications'
 
 const Medit = () => {
   const auth = useContext(AuthContext)
@@ -51,7 +53,10 @@ const Medit = () => {
       method: 'GET'
     })
 
-    setCategories(response.data.results)
+    const activeCategories = response.data.results.filter(
+      (category) => category.is_active
+    )
+    setCategories(activeCategories)
     setIsLoading(false)
   }
 
@@ -87,12 +92,11 @@ const Medit = () => {
 
   const openModalDelete = (id) => {
     setShowModal('is-active')
-    setMeditId(id)
+    setMeditId(id.id)
   }
 
   const closeModalDelete = () => {
-    setShowModal('')
-    setMeditId(null)
+    deleteMedit()
   }
 
   const submitCategory = async (e) => {
@@ -170,7 +174,51 @@ const Medit = () => {
     }
   }
 
-  const deleteMedit = async () => {}
+  const deleteMedit = async () => {
+    const formData = new FormData()
+    formData.append('is_active', 0)
+
+    try {
+      setIsLoading(true)
+      const resp = await axios({
+        headers: {
+          Authorization: `Bearer ${auth.token}`
+        },
+        baseURL: `${process.env.REACT_APP_API_URL}/catalog/categories/${meditId}/`,
+        method: 'PATCH',
+        mode: 'no-cors',
+        data: formData
+      })
+
+      setIsLoading(false)
+
+      if (resp.status === 200) {
+        NotificationManager.success(
+          'Success',
+          'Categoría eliminada correctamente',
+          30000
+        )
+      } else {
+        //setError(resp)
+        NotificationManager.error(
+          'Error',
+          'No se pudo eliminar la categoría',
+          30000
+        )
+      }
+    } catch (err) {
+      setIsLoading(false)
+      //setError(err.errors || 'Something went wrong, please try again.')
+      NotificationManager.error(
+        JSON.stringify(err.response.data.errors),
+        'Error',
+        30000
+      )
+    }
+
+    setShowModal('')
+    setMeditId(null)
+  }
 
   const customStyles = {
     content: {
@@ -336,6 +384,7 @@ const Medit = () => {
           </form>
         </Modal>
       </div>
+      <NotificationContainer />
     </div>
   )
 }

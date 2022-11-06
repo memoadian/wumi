@@ -211,20 +211,29 @@ const Category = (props) => {
       sortable: true
     },
     {
-      Header: '',
+      Header: 'Individual/capítulo',
+      accessor: 'is_individual',
+      sortable: true,
+      Cell: (row) => <>{row.value ? 'Individual' : 'Capítulo'}</>
+    },
+    {
+      Header: 'Acciones',
       accessor: 'id',
       Cell: (row) => (
         <>
-          {console.log(row.data)}
           <NavLink
+            style={{ marginRight: '20px', display: 'inline-block' }}
             to={
-              row.is_individual
-                ? `/edit-single/${row.data.id}`
-                : `/edit-chapter/60`
+              row.row.values.is_individual
+                ? `/edit-single/${row.value}`
+                : `/edit-chapter/${row.value}`
             }
           >
-            Edit
+            Editar
           </NavLink>
+          <span style={{ display: 'inline-block', color: '#ff7d54' }}>
+            Borrar
+          </span>
         </>
       )
     }

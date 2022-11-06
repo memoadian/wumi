@@ -9,6 +9,8 @@ import AudioUpload from 'shared/components/FormElements/AudioUpload'
 import Input from 'shared/components/FormElements/Input'
 import Loader from 'shared/UIElements/Loader'
 import axios from 'axios'
+import 'react-notifications/lib/notifications.css'
+import { NotificationContainer, NotificationManager } from 'react-notifications'
 
 import './Form.css'
 
@@ -102,13 +104,20 @@ const EditContentSingle = (props) => {
       setIsLoading(false)
 
       if (resp.status === 200) {
-        history.replace(`/category/${resp.data.category.id}`)
+        //history.replace(`/category/${resp.data.category.id}`)
+        NotificationManager.success(
+          'Success',
+          'Los cambios se realizaron exitosamente',
+          30000
+        )
       } else {
         //setError(resp)
+        NotificationManager.error('Error', 'Error', 30000)
       }
     } catch (err) {
       setIsLoading(false)
       setError(err.errors || 'Something went wrong, please try again.')
+      NotificationManager.error('Error', 'Error', 30000)
     }
   }
 
@@ -121,7 +130,6 @@ const EditContentSingle = (props) => {
         </button>
       </div>
       <div className='card no-margin'>
-        {error}
         {isLoading && <Loader asOverlay />}
         {data && (
           <form onSubmit={submitHandler}>
@@ -199,6 +207,7 @@ const EditContentSingle = (props) => {
             </div>
           </form>
         )}
+        <NotificationContainer />
       </div>
     </div>
   )

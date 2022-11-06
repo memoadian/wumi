@@ -9,6 +9,9 @@ import Input from 'shared/components/FormElements/Input'
 import Loader from 'shared/UIElements/Loader'
 import axios from 'axios'
 
+import 'react-notifications/lib/notifications.css'
+import { NotificationContainer, NotificationManager } from 'react-notifications'
+
 import './Form.css'
 
 const NewContentSingle = (props) => {
@@ -107,11 +110,16 @@ const NewContentSingle = (props) => {
       if (resp.status === 201) {
         history.replace(`/edit-single/${resp.data.id}`)
       } else {
-        //setError(resp)
+        NotificationManager.error(JSON.stringify(resp), 'Error', 30000)
       }
     } catch (err) {
       setIsLoading(false)
       setError(err.errors || 'Something went wrong, please try again.')
+      NotificationManager.error(
+        JSON.stringify(err.response.data.errors),
+        'Error',
+        30000
+      )
     }
   }
 
@@ -125,7 +133,6 @@ const NewContentSingle = (props) => {
       </div>
       <div className='card no-margin'>
         {isLoading && <Loader asOverlay />}
-        {error}
         <form onSubmit={submitHandler}>
           <div className='columns'>
             <div className='column'>
@@ -189,6 +196,7 @@ const NewContentSingle = (props) => {
             <div className='column'></div>
           </div>
         </form>
+        <NotificationContainer />
       </div>
     </div>
   )

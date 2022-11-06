@@ -365,3 +365,9 @@ button.print {
   margin: 20px 5px;
   height: 32px;
 }
+.notification-message .message{
+  background-color: transparent !important;
+}
+.notification .title{
+  color: #fff !important;
+}

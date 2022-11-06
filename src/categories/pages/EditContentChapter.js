@@ -1,6 +1,5 @@
 import React, { useState, useContext, useEffect } from 'react'
 import { useForm } from 'shared/hooks/form-hook'
-import { useHistory } from 'react-router-dom'
 import { AuthContext } from 'shared/context/auth-context'
 import getStatus from 'shared/helpers/getStatus'
 import getLevels from 'shared/helpers/getLevels'
@@ -10,6 +9,7 @@ import Modal from 'react-modal'
 import axios from 'axios'
 
 import 'react-notifications/lib/notifications.css'
+import { NotificationContainer, NotificationManager } from 'react-notifications'
 import AudioUpload from 'shared/components/FormElements/AudioUpload'
 import CardChapter from 'categories/components/CardChapter'
 
@@ -182,13 +182,26 @@ const EditContentChapter = (props) => {
 
       setIsLoading(false)
 
-      if (resp.status === 201) {
+      if (resp.status === 200) {
+        NotificationManager.success(
+          'Success message',
+          'Los cambios se han realizado con éxito',
+          30000
+        )
       } else {
         //setError(resp)
+        console.log(resp)
+        NotificationManager.error(JSON.stringify(resp), 'Error', 30000)
       }
     } catch (err) {
       setIsLoading(false)
       setError(err.response.data.errors)
+      console.log(err.response.data.errors)
+      NotificationManager.error(
+        JSON.stringify(err.response.data.errors),
+        'Error',
+        30000
+      )
     }
   }
 
@@ -223,12 +236,18 @@ const EditContentChapter = (props) => {
         setIsEdit(true)
         setID(resp.data.id)
         setChapterSelected(resp.data)
+        NotificationManager.success(
+          'Success',
+          'Se han guardado los cambios con éxito',
+          3000
+        )
       } else {
-        //setError(resp)
+        NotificationManager.error('Error', 'Error', 3000)
       }
     } catch (err) {
       setIsLoading(false)
       setError(err.response.data.errors)
+      NotificationManager.error('Error', err.response.data.errors, 3000)
     }
   }
 
@@ -262,26 +281,32 @@ const EditContentChapter = (props) => {
         setID(resp.data.id)
         setChapterSelected(resp.data)
         getChapters()
+        NotificationManager.success(
+          'Success',
+          'Se han guardado los cambios con éxito',
+          3000
+        )
       } else {
         //setError(resp)
+        NotificationManager.error('Error', 'Error', 3000)
       }
     } catch (err) {
       setIsLoading(false)
       setError(err.response.data.errors)
+      NotificationManager.error('Error', err.response.data.errors, 3000)
     }
   }
 
   return (
     <div>
       <div className='title-h1'>
-        <h1>Nuevo Contenido / Capítulos</h1>
+        <h1>Editar Contenido / Capítulos</h1>
         <button className='button right-h1' onClick={submitHandler}>
           Guardar
         </button>
       </div>
       <div className='card no-margin'>
         {isLoading && <Loader asOverlay />}
-        {error && <pre>{JSON.stringify(error)}</pre>}
         {data && (
           <form onSubmit={submitHandler}>
             <div className='columns'>
@@ -475,6 +500,7 @@ const EditContentChapter = (props) => {
             </div>
           </form>
         )}
+        <NotificationContainer />
       </div>
     </div>
   )

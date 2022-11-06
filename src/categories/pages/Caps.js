@@ -8,6 +8,8 @@ import CardCategory from 'categories/components/CardCategory'
 import Loader from 'shared/UIElements/Loader'
 import Input from 'shared/components/FormElements/Input'
 import ImageUpload from 'shared/components/FormElements/ImageUpload'
+import 'react-notifications/lib/notifications.css'
+import { NotificationContainer, NotificationManager } from 'react-notifications'
 
 const Caps = () => {
   const auth = useContext(AuthContext)
@@ -51,7 +53,10 @@ const Caps = () => {
       method: 'GET'
     })
 
-    setCategories(response.data.results)
+    const activeCategories = response.data.results.filter(
+      (category) => category.is_active
+    )
+    setCategories(activeCategories)
     setIsLoading(false)
   }
 
@@ -87,12 +92,12 @@ const Caps = () => {
 
   const openModalDelete = (id) => {
     setShowModal('is-active')
-    setCapId(id)
+    console.log(id.id)
+    setCapId(id.id)
   }
 
   const closeModalDelete = () => {
-    setShowModal('')
-    setCapId(null)
+    deleteCap()
   }
 
   const submitCategory = async (e) => {
@@ -123,11 +128,26 @@ const Caps = () => {
       if (resp.status === 201) {
         handleCloseModal()
         fetchCategories()
+        NotificationManager.success(
+          'Success',
+          'La capsula se ha creado correctamente',
+          30000
+        )
       } else {
         //setError(resp)
+        NotificationManager.error(
+          'Error',
+          'Ócurrio un error al crear la capsula',
+          30000
+        )
       }
     } catch (err) {
       setIsLoading(false)
+      NotificationManager.error(
+        JSON.stringify(err.response.data.errors),
+        'Error',
+        30000
+      )
       //setError(err.errors || 'Something went wrong, please try again.')
     }
   }
@@ -170,7 +190,52 @@ const Caps = () => {
     }
   }
 
-  const deleteCap = async () => {}
+  const deleteCap = async () => {
+    const formData = new FormData()
+    formData.append('is_active', 0)
+
+    try {
+      setIsLoading(true)
+      const resp = await axios({
+        headers: {
+          Authorization: `Bearer ${auth.token}`
+        },
+        baseURL: `${process.env.REACT_APP_API_URL}/catalog/categories/${capId}/`,
+        method: 'PATCH',
+        mode: 'no-cors',
+        data: formData
+      })
+
+      setIsLoading(false)
+
+      if (resp.status === 200) {
+        NotificationManager.success(
+          'Success',
+          'La capsula se ha eliminado correctamente',
+          30000
+        )
+      } else {
+        //setError(resp)
+        NotificationManager.error(
+          'Error',
+          'Ócurrio un error al eliminar la capsula',
+          30000
+        )
+      }
+    } catch (err) {
+      setIsLoading(false)
+      //setError(err.errors || 'Something went wrong, please try again.')
+      NotificationManager.error(
+        JSON.stringify(err.response.data.errors),
+        'Error',
+        30000
+      )
+    }
+
+    fetchCategories()
+    setShowModal('')
+    setCapId(null)
+  }
 
   const customStyles = {
     content: {
@@ -337,6 +402,7 @@ const Caps = () => {
           </form>
         </Modal>
       </div>
+      <NotificationContainer />
     </div>
   )
 }
