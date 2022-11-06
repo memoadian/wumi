@@ -96,7 +96,8 @@ const Medit = () => {
   }
 
   const closeModalDelete = () => {
-    deleteMedit()
+    setShowModal('')
+    setMeditId(null)
   }
 
   const submitCategory = async (e) => {
@@ -180,12 +181,27 @@ const Medit = () => {
       if (resp.status === 200) {
         handleCloseModal()
         fetchCategories()
+        NotificationManager.success(
+          'Success',
+          'Meditación actualizada con éxito',
+          30000
+        )
       } else {
         //setError(resp)
+        NotificationManager.error(
+          'Error',
+          'Ha ocurrido un error al actualizar la meditación',
+          30000
+        )
       }
     } catch (err) {
       setIsLoading(false)
       //setError(err.errors || 'Something went wrong, please try again.')
+      NotificationManager.error(
+        'Error',
+        JSON.stringify(err.response.data.errors),
+        30000
+      )
     }
   }
 

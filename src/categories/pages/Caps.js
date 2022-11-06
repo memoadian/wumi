@@ -97,7 +97,8 @@ const Caps = () => {
   }
 
   const closeModalDelete = () => {
-    deleteCap()
+    setShowModal('')
+    setCapId(null)
   }
 
   const submitCategory = async (e) => {
@@ -181,12 +182,27 @@ const Caps = () => {
       if (resp.status === 200) {
         handleCloseModal()
         fetchCategories()
+        NotificationManager.success(
+          'Success',
+          'La capsula se ha actualizado correctamente',
+          30000
+        )
       } else {
         //setError(resp)
+        NotificationManager.error(
+          'Error',
+          'Ócurrio un error al actualizar la capsula',
+          30000
+        )
       }
     } catch (err) {
       setIsLoading(false)
       //setError(err.errors || 'Something went wrong, please try again.')
+      NotificationManager.error(
+        'Error',
+        JSON.stringify(err.response.data.errors),
+        30000
+      )
     }
   }
 
