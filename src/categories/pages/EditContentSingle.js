@@ -1,6 +1,5 @@
 import React, { useState, useContext, useEffect } from 'react'
 import { useForm } from 'shared/hooks/form-hook'
-import { useHistory } from 'react-router-dom'
 import { AuthContext } from 'shared/context/auth-context'
 import getContentTypes from 'shared/helpers/getContentTypes'
 import getStatus from 'shared/helpers/getStatus'
@@ -15,10 +14,8 @@ import { NotificationContainer, NotificationManager } from 'react-notifications'
 import './Form.css'
 
 const EditContentSingle = (props) => {
-  const history = useHistory()
   const auth = useContext(AuthContext)
   const [isLoading, setIsLoading] = useState(false)
-  const [error, setError] = useState()
   const [status, setStatus] = useState([])
   const [levels, setLevels] = useState([])
   const [data, setData] = useState(null)
@@ -104,20 +101,21 @@ const EditContentSingle = (props) => {
       setIsLoading(false)
 
       if (resp.status === 200) {
-        //history.replace(`/category/${resp.data.category.id}`)
         NotificationManager.success(
           'Success',
           'Los cambios se realizaron exitosamente',
           30000
         )
       } else {
-        //setError(resp)
         NotificationManager.error('Error', 'Error', 30000)
       }
     } catch (err) {
       setIsLoading(false)
-      setError(err.errors || 'Something went wrong, please try again.')
-      NotificationManager.error('Error', 'Error', 30000)
+      NotificationManager.error(
+        'Error',
+        JSON.stringify(err.response.data.errors),
+        30000
+      )
     }
   }
 

@@ -18,7 +18,7 @@ const Sidebar = () => {
               <NavLink to='/panel'>Dashboard</NavLink>
             </li>
             <li>
-              <NavLink to='/users'>Usuarios</NavLink>
+              <NavLink to='/users?page=1'>Usuarios</NavLink>
             </li>
             <li>
               <NavLink to='/home'>Home</NavLink>

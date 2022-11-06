@@ -21,7 +21,7 @@ const Users = (props) => {
   const [totalNumPages, setTotalNumPages] = useState(1)
   const [error, setError] = useState(null)
 
-  let limit = 10
+  let limit = 30
   let offset = 0
   let totalUsersTemp = 0
   const searchParams = new URLSearchParams(props.location.search)
@@ -160,7 +160,6 @@ const Users = (props) => {
   ]
 
   const setUsersPerPage = async (e) => {
-    console.log(e.target.value)
     limit = e.target.value
 
     await fetchUsers()
@@ -229,7 +228,7 @@ const Users = (props) => {
                     </ul>
                   </nav>
                 </div>
-                <div className='column is-one-fifth'>
+                {/*<div className='column is-one-fifth'>
                   <label htmlFor=''>Usuarios por página</label>
                   <select onChange={setUsersPerPage} defaultValue='20'>
                     <option value='20'>20</option>
@@ -238,7 +237,7 @@ const Users = (props) => {
                     <option value='50'>50</option>
                     <option value='100'>100</option>
                   </select>
-                </div>
+                </div>*/}
               </div>
               <Table
                 dataHeaders={headers}

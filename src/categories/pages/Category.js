@@ -10,6 +10,9 @@ import Table from 'shared/components/DataTable/Table'
 import Loader from 'shared/UIElements/Loader'
 import './Category.css'
 
+import 'react-notifications/lib/notifications.css'
+import { NotificationContainer, NotificationManager } from 'react-notifications'
+
 const Category = (props) => {
   const auth = useContext(AuthContext)
   const history = useHistory()
@@ -21,7 +24,8 @@ const Category = (props) => {
   const [pages, setPages] = useState([])
   const [currentPage, setCurrentPage] = useState(1)
   const [totalNumPages, setTotalNumPages] = useState(1)
-  const [error, setError] = useState(null)
+  const [showModal, setShowModal] = useState('')
+  const [itemId, setItemId] = useState(null)
 
   let limit = 20
   let offset = 0
@@ -36,51 +40,33 @@ const Category = (props) => {
 
     getCategoryContent()
     getCategory()
-  }, [auth, props.match.params.id])
+  }, [auth])
 
   const setTotalPages = () => {
     let total = Math.ceil(totalResultsTemp / limit)
     let pages = []
     if (total > 10) {
       for (let i = 1; i <= total; i++) {
-        if (
-          i === 1 ||
-          i === 2 ||
-          i === total ||
-          i === total - 1 ||
-          (i >= page - 2 && i <= page + 2)
-        ) {
-          if (pages.indexOf(i) === -1) {
-            pages.push(i)
-          }
+        if (i <= 2 || i >= total - 2 || (i >= page - 2 && i <= page + 2)) {
+          pages.push(i)
         }
 
-        if (page === 1 || page === 2 || page === total || page === total - 1) {
+        if (page <= 2 || page >= total - 1) {
           if (
             i >= Math.floor(total / 2) - 2 &&
             i <= Math.floor(total / 2) + 2
           ) {
-            if (pages.indexOf(i) === -1) {
-              pages.push(i)
-            }
+            pages.push(i)
           }
         }
 
-        if (page === 3) {
-          if (i === 5) {
-            if (pages.indexOf(i) === -1) {
-              pages.push(i)
-            }
-          }
+        if (page === total - 2 && i === total - 4) {
+          pages.push(i)
         }
+      }
 
-        if (page === total - 2) {
-          if (i === total - 4) {
-            if (pages.indexOf(i) === -1) {
-              pages.push(i)
-            }
-          }
-        }
+      if (page <= 2 && total > 15) {
+        pages.splice(page + 2, 0, '...')
       }
 
       if (page > 5) {
@@ -88,7 +74,7 @@ const Category = (props) => {
       }
 
       if (page < total - 4) {
-        pages.splice(pages.length - 2, 0, '...')
+        pages.splice(pages.length - 3, 0, '...')
       }
     } else {
       for (let i = 1; i <= total; i++) {
@@ -118,12 +104,22 @@ const Category = (props) => {
         method: 'GET'
       })
 
-      setData(response.data.results)
-      totalResultsTemp = response.data.count
-      setTotalPages()
-      setIsLoading(false)
+      if (response.status === 200) {
+        var activeResults = response.data.results /*.filter(
+          (item) => item.active === true
+        )*/
+        setData(activeResults)
+        totalResultsTemp = response.data.count
+        setTotalPages()
+      } else {
+        NotificationManager.error('Error', 'Error al cargar los datos', 30000)
+      }
     } catch (err) {
-      setError(err.message)
+      NotificationManager.error(
+        'Error',
+        'Error al obtener los contenidos',
+        30000
+      )
     } finally {
       setIsLoading(false)
     }
@@ -151,6 +147,17 @@ const Category = (props) => {
     setOpenModal(false)
   }
 
+  const openModalDelete = (id) => {
+    setShowModal('is-active')
+    console.log(id)
+    setItemId(id)
+  }
+
+  const closeModalDelete = () => {
+    setShowModal('')
+    setItemId(null)
+  }
+
   const handleContent = (type) => {
     setType(type)
   }
@@ -161,6 +168,51 @@ const Category = (props) => {
     } else if (type === 'chapter') {
       history.push(`/content-chapter/${props.match.params.id}`)
     }
+  }
+
+  const deleteItem = async () => {
+    const formData = new FormData()
+    formData.append('is_active', 0)
+
+    try {
+      setIsLoading(true)
+      const resp = await axios({
+        headers: {
+          Authorization: `Bearer ${auth.token}`
+        },
+        baseURL: `${process.env.REACT_APP_API_URL}/contents/${itemId}/`,
+        method: 'PATCH',
+        mode: 'no-cors',
+        data: formData
+      })
+
+      setIsLoading(false)
+
+      if (resp.status === 200) {
+        NotificationManager.success(
+          'Success',
+          'El contenido se ha eliminado correctamente',
+          30000
+        )
+      } else {
+        NotificationManager.error(
+          'Error',
+          'Ócurrio un error al eliminar la capsula',
+          30000
+        )
+      }
+    } catch (err) {
+      setIsLoading(false)
+      NotificationManager.error(
+        JSON.stringify(err.response.data.errors),
+        'Error',
+        30000
+      )
+    }
+
+    getCategoryContent()
+    setShowModal('')
+    setItemId(null)
   }
 
   const customStyles = {
@@ -231,7 +283,14 @@ const Category = (props) => {
           >
             Editar
           </NavLink>
-          <span style={{ display: 'inline-block', color: '#ff7d54' }}>
+          <span
+            onClick={() => openModalDelete(row.value)}
+            style={{
+              display: 'inline-block',
+              color: '#ff7d54',
+              cursor: 'pointer'
+            }}
+          >
             Borrar
           </span>
         </>
@@ -299,6 +358,36 @@ const Category = (props) => {
           )}
         </div>
       </div>
+      <div className={`modal ${showModal}`}>
+        <div className='modal-background'></div>
+        <div className='modal-content'>
+          <div className='modal-card'>
+            <header className='modal-card-head'>
+              <p className='modal-card-title'>Confirmar</p>
+              <button
+                className='delete'
+                aria-label='close'
+                onClick={() => closeModalDelete()}
+              ></button>
+            </header>
+            <section className='modal-card-body'>
+              Confirma que deseas eliminar este contenido, esta acción solo se
+              puede revertir desde el panel de administración de backend.
+            </section>
+            <footer className='modal-card-foot'>
+              <button
+                className='button is-danger'
+                onClick={() => deleteItem(itemId)}
+              >
+                Eliminar Contenido
+              </button>
+              <button className='button' onClick={() => closeModalDelete()}>
+                Cancelar
+              </button>
+            </footer>
+          </div>
+        </div>
+      </div>
       <Modal
         ariaHideApp={false}
         isOpen={openModal}
@@ -348,6 +437,7 @@ const Category = (props) => {
           </div>
         </form>
       </Modal>
+      <NotificationContainer />
     </div>
   )
 }
